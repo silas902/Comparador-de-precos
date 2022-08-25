@@ -1,17 +1,18 @@
 import 'dart:math';
 
-import 'package:comparador_de_precos/models/dummy_mercado.dart';
+import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
-import '../models/mercado.dart';
+import 'package:provider/src/provider.dart';
+import '../../models/mercado.dart';
 
-class FormPage extends StatefulWidget {
+class CadastroMercadosScreen extends StatefulWidget {
 
 
   @override
-  State<FormPage> createState() => _FormPageState();
+  State<CadastroMercadosScreen> createState() => _CadastroMercadosScreenState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _CadastroMercadosScreenState extends State<CadastroMercadosScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _formData = Map<String, Object>();
@@ -36,7 +37,7 @@ class _FormPageState extends State<FormPage> {
       },
     );
   }
-
+  /*
   Widget fieldProduto() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Produto:'),
@@ -62,7 +63,7 @@ class _FormPageState extends State<FormPage> {
     return TextFormField(
         keyboardType: TextInputType.number,
         decoration: const InputDecoration(labelText: 'Valor'),
-        onFieldSubmitted: (_) => _submitForm(),
+        onFieldSubmitted: (_) => _saveMercado,
         onSaved: (valorProduto) =>
             _formData['valorProduto'] = double.parse(valorProduto ?? '0'),
         validator: (_valorProduto) {
@@ -80,26 +81,20 @@ class _FormPageState extends State<FormPage> {
           return null;
         });
   }
-
-  _submitForm() {
+ */
+  _saveMercado(BuildContext context) {
     final isValid = _formKey.currentState?.validate() ?? false;
-
-
-    //if (isValid) {
-      
+     
     _formKey.currentState?.save();
 
     final newMercado = Mercado(
       id: Random().nextDouble().toString(),
       nome: _formData['nome'] as String,
-      nomeProduto: _formData['nomeProduto'] as String,
-      valorProduto: _formData['valorProduto'] as double,
-
+      //nomeProduto: _formData['nomeProduto'] as String,
+      //valorProduto: _formData['valorProduto'] as double,
     ); 
-  }
-
-  void saveMercado() {
-
+    context.read<MercadoProvider>().addMercado(newMercado);
+    Navigator.pop(context);
   }
 
   @override
@@ -112,7 +107,8 @@ class _FormPageState extends State<FormPage> {
           IconButton(
             onPressed: (){
               setState(() {
-                _submitForm;
+                _saveMercado(context);
+
               });             
             },
             icon: Icon(Icons.save),
@@ -124,7 +120,7 @@ class _FormPageState extends State<FormPage> {
         child: Form(
           key: _formKey,
           child: ListView(
-            children: [fieldNome(), fieldProduto(), fieldValor()],
+            children: [fieldNome()],
           ),
         ),
       ),

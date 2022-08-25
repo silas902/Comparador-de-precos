@@ -1,9 +1,12 @@
-class Mercado {
+class Produto {
+  
   final String id;
   final String nome; 
+  final double valorProduto;
 
-  Mercado ({
+  Produto ({
     required this.id,
     required this.nome,
+    required this.valorProduto,
   });
 }
