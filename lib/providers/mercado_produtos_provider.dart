@@ -15,7 +15,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
      
   Map<String,List<Produto>> get items => _items;
   List<Produto> produtosDoMercado (String idMercado) => _items[idMercado] ?? [];
-  
+  //TODO ALGUAM COISA
   void addProduto(Produto produto, String mercadoId) {
     if(_items[mercadoId] == null ) {
       _items[mercadoId] = [];

@@ -1,19 +1,21 @@
-import 'dart:math';
-
+import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CadastroProdutosScreen extends StatefulWidget {
-  CadastroProdutosScreen({required this.mercadoId});
-  final String mercadoId;
+class EditProdutoScreen extends StatefulWidget {
+  final Produto produto;
+  final Mercado mercado;
+  const EditProdutoScreen(
+      {Key? key, required this.produto, required this.mercado})
+      : super(key: key);
 
   @override
-  State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
+  State<EditProdutoScreen> createState() => _EditProdutoScreenState();
 }
 
-class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
+class _EditProdutoScreenState extends State<EditProdutoScreen> {
   late final TextEditingController _controllerProduto;
   late final TextEditingController _controllerValor;
 
@@ -21,8 +23,10 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controllerProduto = TextEditingController();
-    _controllerValor = TextEditingController();
+    _controllerProduto =
+        TextEditingController(text: widget.produto.nomeProduto);
+    _controllerValor =
+        TextEditingController(text: widget.produto.valorProduto.toString());
   }
 
   @override
@@ -31,18 +35,17 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Novo Produto'),
+        title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
               final novoProduto = Produto(
-                id: UniqueKey().toString(),
+                id: widget.produto.id,
                 nomeProduto: _controllerProduto.text,
                 valorProduto: double.parse(_controllerValor.text),
               );
-
-              controller.addProduto(novoProduto, widget.mercadoId);
+              controller.updateProduto(novoProduto, widget.mercado.id);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
@@ -57,7 +60,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
               TextFormField(
                 controller: _controllerProduto,
                 keyboardType: TextInputType.text,
-                decoration: const InputDecoration(labelText: 'Produto'),
+                decoration: const InputDecoration(labelText: 'Valor'),
               ),
               TextFormField(
                 controller: _controllerValor,

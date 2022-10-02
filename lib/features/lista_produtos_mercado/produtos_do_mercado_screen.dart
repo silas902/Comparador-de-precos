@@ -1,5 +1,5 @@
-
 import 'package:comparador_de_precos/features/lista_mercados/cadastro_produtos_screen.dart';
+import 'package:comparador_de_precos/features/lista_mercados/edit_produto_screen.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 
 class ProdutosDoMercadoScreen extends StatelessWidget {
   final Mercado mercado;
-  const ProdutosDoMercadoScreen(this.mercado,);
+  const ProdutosDoMercadoScreen(
+    this.mercado,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +19,34 @@ class ProdutosDoMercadoScreen extends StatelessWidget {
         title: Text(mercado.nome),
         actions: [
           IconButton(
-            onPressed: () {} ,//=> Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercadoId: mercado.id, produto: produtosValor.p))),
+            onPressed:
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercadoId: mercado.id,))),
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: Consumer<MercadoProdutosProvider>(
         builder: (context, mercadoProdutosProvider, child) {
-          List<Produto> produtosDoMercado = mercadoProdutosProvider.produtosDoMercado(mercado.id);
+          List<Produto> produtosDoMercado =
+              mercadoProdutosProvider.produtosDoMercado(mercado.id);
           return ListView.builder(
             itemCount: produtosDoMercado.length,
-            itemBuilder: (context,index) => ProdutoListItem(produto: produtosDoMercado[index], onClick: (produto){
-              Navigator.push(context, 
-              MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercadoId: mercado.id, produto: produto)));
-            },),
+            itemBuilder: (context, index) {
+              final produtoItem = produtosDoMercado[index];
+              return ProdutoListItem(
+                produto: produtoItem,
+                onClick: (produto) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProdutoScreen(
+                        produto: produtoItem, mercado: mercado,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),
@@ -41,7 +57,9 @@ class ProdutosDoMercadoScreen extends StatelessWidget {
 class ProdutoListItem extends StatelessWidget {
   final Produto produto;
   final Function(Produto) onClick;
-  const ProdutoListItem({Key? key, required this.produto, required this.onClick}) : super(key: key);
+  const ProdutoListItem(
+      {Key? key, required this.produto, required this.onClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
