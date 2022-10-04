@@ -10,8 +10,18 @@ class MercadoProvider extends ChangeNotifier {
 
   List<Mercado> get items => [..._items];
 
-  void addMercado(Mercado mercado) {
+  void addMercado(Mercado mercado){
     _items.add(mercado);
     notifyListeners();
+  }
+
+  void excluirMercado(Mercado mercado){
+    int index = _items.indexWhere((p) => p.id == mercado.id);
+
+    if (index >= 0) {
+      final Mercado = _items[index];
+      _items.remove(mercado);
+    }
+    notifyListeners(); 
   }
 }

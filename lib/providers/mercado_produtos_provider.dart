@@ -1,4 +1,5 @@
 
+import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,9 @@ class MercadoProdutosProvider extends ChangeNotifier {
      
   Map<String,List<Produto>> get items => _items;
   List<Produto> produtosDoMercado (String idMercado) => _items[idMercado] ?? [];
+  
   //TODO ALGUAM COISA
+  
   void addProduto(Produto produto, String mercadoId) {
     if(_items[mercadoId] == null ) {
       _items[mercadoId] = [];
@@ -36,5 +39,17 @@ class MercadoProdutosProvider extends ChangeNotifier {
       _items[mercadoId]![index] = produto;
       notifyListeners();
     }
+  }
+
+  void excluirProduto(Produto produto, String mercadoId){
+    int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
+    print(items[mercadoId]!.length);
+
+    if (index >= 0) {
+      //final produto = _items[index];
+       _items[mercadoId]!.remove(produto);
+    }
+    notifyListeners();
+     print(items[mercadoId]!.length);
   }
 }
