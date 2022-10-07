@@ -20,15 +20,14 @@ class ProdutosDoMercadoScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed:
-                () => Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercadoId: mercado.id,))),
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercado: mercado,))),
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: Consumer<MercadoProdutosProvider>(
         builder: (context, mercadoProdutosProvider, child) {
-          List<Produto> produtosDoMercado =
-              mercadoProdutosProvider.produtosDoMercado(mercado.id);
+          List<Produto> produtosDoMercado = mercado.produtos;
           return ListView.builder(
             itemCount: produtosDoMercado.length,
             itemBuilder: (context, index) {
@@ -94,7 +93,7 @@ class ProdutoListItem extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                Provider.of<MercadoProdutosProvider>(context, listen: false).excluirProduto(produto, mercado.id);
+                Provider.of<MercadoProdutosProvider>(context, listen: false).excluirProduto(produto, mercado);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],

@@ -1,13 +1,15 @@
 import 'dart:math';
 
+import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CadastroProdutosScreen extends StatefulWidget {
-  CadastroProdutosScreen({required this.mercadoId});
-  final String mercadoId;
+  final Mercado mercado;
+  CadastroProdutosScreen({required this.mercado});
+  
 
   @override
   State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
@@ -42,7 +44,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
                 valorProduto: double.parse(_controllerValor.text),
               );
 
-              controller.addProduto(novoProduto, widget.mercadoId);
+              controller.addProduto(novoProduto, widget.mercado);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class MercadoProvider extends ChangeNotifier {
-  List<Mercado> _items = [
-    Mercado(id: 'p1', nome: 'BomPreço'),
-    Mercado(id: 'p2', nome: 'Atacadão'),
-    Mercado(id: 'p3', nome: 'Redmix'),
+  final  List<Mercado> _items = [
+    //Mercado(id: 'p1', nome: 'BomPreço'),
+    //Mercado(id: 'p2', nome: 'Atacadão'),
+    //Mercado(id: 'p3', nome: 'Redmix'),
   ];
 
   List<Mercado> get items => [..._items];
@@ -25,7 +25,8 @@ class MercadoProvider extends ChangeNotifier {
       final id = json.decode(response.body)['name'];
       _items.add(Mercado(
         id: id,
-        nome: controllerMercadoNome as String,
+        nome: controllerMercadoNome,
+        produtos: [],
       ));
       notifyListeners();
     } catch (_) {
@@ -54,6 +55,7 @@ class MercadoProvider extends ChangeNotifier {
     final novoMercado = Mercado(
       id: mercado.id,
       nome: contralerEditMercado,
+      produtos: mercado.produtos,
     );
 
     if (index >= 0) {

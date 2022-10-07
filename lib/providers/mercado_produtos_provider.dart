@@ -1,68 +1,92 @@
+import 'dart:convert';
 
-import 'dart:math';
-
+import 'package:comparador_de_precos/constantes/constantes.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class MercadoProdutosProvider extends ChangeNotifier {
+ // final List<Produto> _items = [
+ //   //'p1': [
+ //   //  Produto(id: 'p4', nomeProduto: 'café', valorProduto: 2.00),
+ //   //  Produto(id: 'p5', nomeProduto: 'leite', valorProduto: 10.00)
+ //   //],
+ //   //'p2': [Produto(id: 's', nomeProduto: 'llaa', valorProduto: 34.00)],
+ //   //'p3': [Produto(id: 'dd', nomeProduto: 'sde', valorProduto: 7.00)]
+ //];
 
-    
-  
-  final Map<String, List<Produto>> _items = {
-    'p1': [Produto(id: 'p4', nomeProduto: 'café', valorProduto: 2.00), 
-  Produto(id: 'p5', nomeProduto: 'leite', valorProduto: 10.00) ],
-    'p2': [Produto(id: 's', nomeProduto: 'llaa', valorProduto: 34.00)],
-    'p3': [Produto(id: 'dd', nomeProduto: 'sde', valorProduto: 7.00)]
-  };
-     
-  Map<String,List<Produto>> get items => _items;
-  List<Produto> produtosDoMercado (String idMercado) => _items[idMercado] ?? [];
-  
-  //TODO ALGUAM COISA
-  
-  void addProduto(Produto produto, String mercadoId) {
-    if(_items[mercadoId] == null ) {
-      _items[mercadoId] = [];
+//List<Produto> get items => _items;
+// List<Produto> produtosDoMercado(String idMercado) => _items[idMercado] ?? [];
+
+  Future<void> addProduto(Produto produto, Mercado mercado) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${Constantes.Url}/produtos/.json'),
+        body: json.encode(
+          {
+            "produto": produto.nomeProduto,
+            "valor": produto.valorProduto,
+          },
+        ),
+      );
+
+      final id = json.decode(response.body)['name'];
+      mercado.produtos.add(
+        Produto(
+          id: id,
+          nomeProduto: produto.nomeProduto,
+          valorProduto: produto.valorProduto,
+        ),
+      );
+      //print(_items.length);
+      print(List<Produto>);
+      notifyListeners();
+    } catch (_) {
+      print('algum erro!');
     }
-    print('notify ' + items.toString());
-    //print();
-    items[mercadoId]!.add(produto);
-    notifyListeners();
+    //if (_items[mercadoId] == null) {
+    //  _items[mercadoId] = [];
+    //}
+   // print('notify ' + items.toString());
+    ////print();
+    //items[mercadoId]!.add(produto);
+    
   }
-
-  void updateProduto (Produto produto, String mercadoId,) {
-   
-    int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
+  // TODO estudar como utilizar lista no dart
+  void updateProduto(
+    Produto produto,
+    Mercado mercado) {
+      int index = mercado.produtos.indexWhere((p) => p.id == produto.id);
+    //int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
     print(index);
 
-    if(index >= 0) {
-      _items[mercadoId]![index] = produto;
+    if (index >= 0) {
+      mercado.produtos[index] = produto;
       notifyListeners();
     }
-
     print('Ocorreu algum erro!');
   }
 
-  void pp (String controllerProduto, double controllerValor, String mercadoId, produtoId) {
+  void pp(String controllerProduto, double controllerValor, Mercado mercado, produtoId) {
     print(controllerProduto);
     final novoProduto = Produto(
       id: produtoId,
       nomeProduto: controllerProduto,
       valorProduto: controllerValor,
     );
-    updateProduto(novoProduto, mercadoId);
+    updateProduto(novoProduto, mercado);
   }
 
-  void excluirProduto(Produto produto, String mercadoId){
-    int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
-    print(items[mercadoId]!.length);
+  void excluirProduto(Produto produto, Mercado mercado) {
+    int index = mercado.produtos.indexWhere((p) => p.id == produto.id);
+    //print(items[mercadoId]!.length);
 
     if (index >= 0) {
       //final produto = _items[index];
-       _items[mercadoId]!.remove(produto);
+      mercado.produtos.remove(produto);
     }
     notifyListeners();
-     print(items[mercadoId]!.length);
+    //print(items[mercadoId]!.length);
   }
 }
