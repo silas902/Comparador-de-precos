@@ -31,7 +31,7 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<MercadoProdutosProvider>(context);
+    final control = Provider.of<MercadoProdutosProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -40,12 +40,7 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              final novoProduto = Produto(
-                id: widget.produto.id,
-                nomeProduto: _controllerProduto.text,
-                valorProduto: double.parse(_controllerValor.text),
-              );
-              controller.updateProduto(novoProduto, widget.mercado.id);
+              control.pp(_controllerProduto.text, double.parse(_controllerValor.text), widget.mercado.id, widget.produto.id);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),

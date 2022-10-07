@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +24,6 @@ class MercadoProdutosProvider extends ChangeNotifier {
   void addProduto(Produto produto, String mercadoId) {
     if(_items[mercadoId] == null ) {
       _items[mercadoId] = [];
-      print('addProduto ' + produto.id);
-      print(_items[mercadoId]);
-      print(mercadoId);
     }
     print('notify ' + items.toString());
     //print();
@@ -32,13 +31,27 @@ class MercadoProdutosProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProduto (Produto produto, String mercadoId) {
+  void updateProduto (Produto produto, String mercadoId,) {
+   
     int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
+    print(index);
 
     if(index >= 0) {
       _items[mercadoId]![index] = produto;
       notifyListeners();
     }
+
+    print('Ocorreu algum erro!');
+  }
+
+  void pp (String controllerProduto, double controllerValor, String mercadoId, produtoId) {
+    print(controllerProduto);
+    final novoProduto = Produto(
+      id: produtoId,
+      nomeProduto: controllerProduto,
+      valorProduto: controllerValor,
+    );
+    updateProduto(novoProduto, mercadoId);
   }
 
   void excluirProduto(Produto produto, String mercadoId){

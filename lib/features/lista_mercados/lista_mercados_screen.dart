@@ -1,5 +1,5 @@
 import 'package:comparador_de_precos/features/lista_mercados/lista_mercados_card_mercado.dart';
-import 'package:comparador_de_precos/features/lista_mercados/cadastro_mercados_screen.dart';
+import 'package:comparador_de_precos/features/formularios/mercados_cadastros_screen.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,7 @@ class ListaMercadosScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroMercadosScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MercadoCadastrosScreen()));
             },
             icon: const Icon(Icons.add),
           ),

@@ -1,5 +1,5 @@
-import 'package:comparador_de_precos/features/lista_mercados/cadastro_produtos_screen.dart';
-import 'package:comparador_de_precos/features/lista_mercados/edit_produto_screen.dart';
+import 'package:comparador_de_precos/features/formularios/cadastro_produtos_screen.dart';
+import 'package:comparador_de_precos/features/formularios/edit_produto_screen.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';

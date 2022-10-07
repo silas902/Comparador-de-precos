@@ -1,3 +1,4 @@
+import 'package:comparador_de_precos/features/formularios/mercado_edit_screens.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/features/lista_produtos_mercado/produtos_do_mercado_screen.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
@@ -11,6 +12,7 @@ class ListaMercadosCardMercado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<MercadoProvider>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: UniqueKey(),
@@ -42,7 +44,7 @@ class ListaMercadosCardMercado extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                Provider.of<MercadoProvider>(context, listen: false).excluirMercado(mercado);
+                provider.excluirMercado(mercado);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],
@@ -60,9 +62,7 @@ class ListaMercadosCardMercado extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProdutosDoMercadoScreen(mercado)));
+                    context,MaterialPageRoute(builder: (context) => ProdutosDoMercadoScreen(mercado)));
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -72,6 +72,7 @@ class ListaMercadosCardMercado extends StatelessWidget {
                     subtitle: const Text('Ultimo Acesso:'),
                     trailing: IconButton(
                       onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MercadoEditSceens(mercado: mercado),));
                       },
                       icon: const Icon(Icons.edit),
                     ),
