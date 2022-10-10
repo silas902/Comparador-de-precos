@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class MercadoProdutosProvider extends ChangeNotifier {
- // final List<Produto> _items = [
+  final List<Produto> _items = [];
  //   //'p1': [
  //   //  Produto(id: 'p4', nomeProduto: 'café', valorProduto: 2.00),
  //   //  Produto(id: 'p5', nomeProduto: 'leite', valorProduto: 10.00)
@@ -16,13 +16,31 @@ class MercadoProdutosProvider extends ChangeNotifier {
  //   //'p3': [Produto(id: 'dd', nomeProduto: 'sde', valorProduto: 7.00)]
  //];
 
-//List<Produto> get items => _items;
+  List<Produto> get items => _items;
 // List<Produto> produtosDoMercado(String idMercado) => _items[idMercado] ?? [];
+  Future<void> carregarProdutos(Mercado mercado) async {
+    final response =
+        await http.get(Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'));
+    Map<String, dynamic> dados = jsonDecode(response.body);
+    dados.forEach((produtoId, produtoDados) {
+      _items.add(
+        Produto(
+          id: produtoId,
+          nomeProduto: produtoDados["produto"],
+          valorProduto: produtoDados["valor"],
+        ),
+      );
+    });
+    notifyListeners();
+    print(jsonDecode(response.body));
+    print(dados.values);
+    print(_items);
+  }
 
   Future<void> addProduto(Produto produto, Mercado mercado) async {
     try {
       final response = await http.post(
-        Uri.parse('${Constantes.Url}/produtos/.json'),
+        Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'),
         body: json.encode(
           {
             "produto": produto.nomeProduto,
@@ -40,7 +58,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
         ),
       );
       //print(_items.length);
-      print(List<Produto>);
+      //print(List<Produto>);
       notifyListeners();
     } catch (_) {
       print('algum erro!');
@@ -51,12 +69,10 @@ class MercadoProdutosProvider extends ChangeNotifier {
    // print('notify ' + items.toString());
     ////print();
     //items[mercadoId]!.add(produto);
-    
   }
+
   // TODO estudar como utilizar lista no dart
-  void updateProduto(
-    Produto produto,
-    Mercado mercado) {
+  void updateProduto(Produto produto, Mercado mercado) {
       int index = mercado.produtos.indexWhere((p) => p.id == produto.id);
     //int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
     print(index);
@@ -68,7 +84,8 @@ class MercadoProdutosProvider extends ChangeNotifier {
     print('Ocorreu algum erro!');
   }
 
-  void pp(String controllerProduto, double controllerValor, Mercado mercado, produtoId) {
+  void pp(String controllerProduto, double controllerValor, Mercado mercado,
+      produtoId) {
     print(controllerProduto);
     final novoProduto = Produto(
       id: produtoId,

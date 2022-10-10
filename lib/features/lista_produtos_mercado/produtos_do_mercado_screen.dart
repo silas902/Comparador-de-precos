@@ -6,41 +6,53 @@ import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProdutosDoMercadoScreen extends StatelessWidget {
+class ProdutosDoMercadoScreen extends StatefulWidget {
   final Mercado mercado;
   const ProdutosDoMercadoScreen(
     this.mercado,
   );
 
   @override
+  State<ProdutosDoMercadoScreen> createState() => _ProdutosDoMercadoScreenState();
+}
+
+class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(mercado.nome),
+        title: Text(widget.mercado.nome),
         actions: [
           IconButton(
             onPressed:
-                () => Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercado: mercado,))),
+                () => Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroProdutosScreen(mercado: widget.mercado,))),
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: Consumer<MercadoProdutosProvider>(
         builder: (context, mercadoProdutosProvider, child) {
-          List<Produto> produtosDoMercado = mercado.produtos;
+          List<Produto> produtosDoMercado = widget.mercado.produtos;
           return ListView.builder(
-            itemCount: produtosDoMercado.length,
+            itemCount: mercadoProdutosProvider.items.length,
             itemBuilder: (context, index) {
-              final produtoItem = produtosDoMercado[index];
+              final produtoItem = mercadoProdutosProvider.items[index];
               return ProdutoListItem(
-                mercado: mercado,
+                mercado: widget.mercado,
                 produto: produtoItem,
                 onClick: (produto) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditProdutoScreen(
-                        produto: produtoItem, mercado: mercado,
+                        produto: produtoItem, mercado: widget.mercado,
                       ),
                     ),
                   );
