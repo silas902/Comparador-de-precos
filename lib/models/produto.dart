@@ -11,4 +11,6 @@ class Produto with ChangeNotifier{
     required this.nomeProduto,
     required this.valorProduto,
   });
+
+  void add(Produto novoProduto) {}
 }

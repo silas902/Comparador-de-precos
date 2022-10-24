@@ -40,7 +40,7 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              control.pp(_controllerProduto.text, double.parse(_controllerValor.text), widget.mercado, widget.produto.id);
+              control.editarProduto(widget.produto, widget.mercado, _controllerProduto.text, double.parse(_controllerValor.text));
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),

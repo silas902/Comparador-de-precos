@@ -1,14 +1,14 @@
 import 'package:comparador_de_precos/features/formularios/mercado_edit_screens.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
-import 'package:comparador_de_precos/features/lista_produtos_mercado/produtos_do_mercado_screen.dart';
+import 'package:comparador_de_precos/features/lista_produtos_mercado/list_produtos_card_screens.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ListaMercadosCardMercado extends StatelessWidget {
+class ListaMercadosCardScreens extends StatelessWidget {
   final Mercado mercado;
 
-  const ListaMercadosCardMercado({Key? key, required this.mercado}): super(key: key);
+  const ListaMercadosCardScreens({Key? key, required this.mercado}): super(key: key);
 
   @override
   Widget build(BuildContext context) {

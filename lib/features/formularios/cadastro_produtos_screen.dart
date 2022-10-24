@@ -38,13 +38,13 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              final novoProduto = Produto(
-                id: UniqueKey().toString(),
-                nomeProduto: _controllerProduto.text,
-                valorProduto: double.parse(_controllerValor.text),
-              );
+              //final novoProduto = Produto(
+              //  id: UniqueKey().toString(),
+              //  nomeProduto: _controllerProduto.text,
+              //  valorProduto: double.parse(_controllerValor.text),
+              //);
 
-              controller.addProduto(novoProduto, widget.mercado);
+              controller.addProduto(_controllerProduto.text, double.parse(_controllerValor.text), widget.mercado, context);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),

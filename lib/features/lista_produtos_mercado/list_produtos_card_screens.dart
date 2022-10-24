@@ -17,15 +17,19 @@ class ProdutosDoMercadoScreen extends StatefulWidget {
 }
 
 class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado);
+    Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado).then((value) => setState(() {
+      _isLoading = false;
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<MercadoProdutosProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.mercado.nome),
@@ -37,28 +41,32 @@ class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
           ),
         ],
       ),
-      body: Consumer<MercadoProdutosProvider>(
+      body: _isLoading ? const Center(child: CircularProgressIndicator(),) : Consumer<MercadoProdutosProvider>(
         builder: (context, mercadoProdutosProvider, child) {
           List<Produto> produtosDoMercado = widget.mercado.produtos;
-          return ListView.builder(
-            itemCount: mercadoProdutosProvider.items.length,
-            itemBuilder: (context, index) {
-              final produtoItem = mercadoProdutosProvider.items[index];
-              return ProdutoListItem(
-                mercado: widget.mercado,
-                produto: produtoItem,
-                onClick: (produto) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditProdutoScreen(
-                        produto: produtoItem, mercado: widget.mercado,
+          return RefreshIndicator(
+            onRefresh: () async => await Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado),
+            child: ListView.builder(
+              itemCount: mercadoProdutosProvider.items.length,
+              itemBuilder: (context, index) {
+                
+                final produtoItem = mercadoProdutosProvider.items[index];
+                return ListProdutosCardScreens(
+                  mercado: widget.mercado,
+                  produto: produtoItem,
+                  onClick: (produto) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProdutoScreen(
+                          produto: produtoItem, mercado: widget.mercado,
+                        ),
                       ),
-                    ),
-                  );
-                },
-              );
-            },
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),
@@ -66,16 +74,15 @@ class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
   }
 }
 
-class ProdutoListItem extends StatelessWidget {
+class ListProdutosCardScreens extends StatelessWidget {
   final Produto produto;
   final Mercado mercado;
   final Function(Produto) onClick;
-  const ProdutoListItem(
-      {Key? key, required this.produto, required this.onClick, required this.mercado})
-      : super(key: key);
+  const ListProdutosCardScreens({Key? key, required this.produto, required this.onClick, required this.mercado}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<MercadoProdutosProvider>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: UniqueKey(),
@@ -105,7 +112,7 @@ class ProdutoListItem extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                Provider.of<MercadoProdutosProvider>(context, listen: false).excluirProduto(produto, mercado);
+                provider.excluirProduto(produto, mercado);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],

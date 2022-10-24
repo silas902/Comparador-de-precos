@@ -1,3 +1,4 @@
+import 'package:comparador_de_precos/features/autenticacao_screen.dart';
 import 'package:comparador_de_precos/features/lista_mercados/lista_mercados_screen.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: ListaMercadosScreen(),
+        home: AutenticacaoScreen(), //ListaMercadosScreen(),
       ),
     );
   }

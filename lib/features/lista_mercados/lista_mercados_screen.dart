@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:ffi';
 
-import 'package:comparador_de_precos/features/lista_mercados/lista_mercados_card_mercado.dart';
+import 'package:comparador_de_precos/features/lista_mercados/lista_mercados_card_screens.dart';
 import 'package:comparador_de_precos/features/formularios/mercados_cadastros_screen.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
@@ -15,14 +16,42 @@ class ListaMercadosScreen extends StatefulWidget {
 }
 
 class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
+  bool _isLoading = true;
+
+  //void isLoadingTemporizador(){
+  //  Timer.periodic(Duration(seconds: 30), (t){
+  //    setState(() {
+  //      _isLoading = false;
+  //    });
+  //    _showDialog(context);
+  //    t.cancel();
+  //  });
+  //}
+
+  
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          title: Text('Ocorreu Algum Erro!'),
+          content: Text('Verifique sua Conexão.'),
+          
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    Provider.of<MercadoProvider>(context, listen: false).carregarMercados();
+    Provider.of<MercadoProvider>(context, listen: false).carregarMercados(context).then((value) {setState(() {
+      _isLoading = false;
+    });}); //isLoadingTemporizador();
   }
   @override
   Widget build(BuildContext context) {
+    final _isLoadingMercado = Provider.of<MercadoProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[300],
@@ -37,12 +66,15 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
           ),
         ],
       ),
-      body: Consumer<MercadoProvider>(
-        builder: (context, mercadoProvider, child) => ListView.builder(
-          itemCount: mercadoProvider.items.length,
-          itemBuilder: (context, index) {
-            return ListaMercadosCardMercado(mercado: mercadoProvider.items[index]);
-          },
+      body: _isLoading ? Center(child: CircularProgressIndicator(),): Consumer<MercadoProvider>(
+        builder: (context, mercadoProvider, child) => RefreshIndicator(
+          onRefresh: () async => await Provider.of<MercadoProvider>(context, listen: false ).carregarMercados(context),
+          child: ListView.builder(
+            itemCount: mercadoProvider.items.length,
+            itemBuilder: (context, index) {
+              return ListaMercadosCardScreens(mercado: mercadoProvider.items[index]);
+            },
+          ),
         ),
       ),
     );

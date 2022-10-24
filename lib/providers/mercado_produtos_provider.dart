@@ -8,102 +8,106 @@ import 'package:http/http.dart' as http;
 
 class MercadoProdutosProvider extends ChangeNotifier {
   final List<Produto> _items = [];
- //   //'p1': [
- //   //  Produto(id: 'p4', nomeProduto: 'café', valorProduto: 2.00),
- //   //  Produto(id: 'p5', nomeProduto: 'leite', valorProduto: 10.00)
- //   //],
- //   //'p2': [Produto(id: 's', nomeProduto: 'llaa', valorProduto: 34.00)],
- //   //'p3': [Produto(id: 'dd', nomeProduto: 'sde', valorProduto: 7.00)]
- //];
 
   List<Produto> get items => _items;
-// List<Produto> produtosDoMercado(String idMercado) => _items[idMercado] ?? [];
+
   Future<void> carregarProdutos(Mercado mercado) async {
-    final response =
-        await http.get(Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'));
+    _items.clear();
+    final response = await http
+        .get(Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'));
     Map<String, dynamic> dados = jsonDecode(response.body);
-    dados.forEach((produtoId, produtoDados) {
-      _items.add(
-        Produto(
-          id: produtoId,
-          nomeProduto: produtoDados["produto"],
-          valorProduto: produtoDados["valor"],
-        ),
-      );
-    });
+    dados.forEach(
+      (produtoId, produtoDados) {
+        _items.add(
+          Produto(
+            id: produtoId,
+            nomeProduto: produtoDados["produto"],
+            valorProduto: produtoDados["valor"],
+          ),
+        );
+      },
+    );
     notifyListeners();
-    print(jsonDecode(response.body));
-    print(dados.values);
-    print(_items);
   }
 
-  Future<void> addProduto(Produto produto, Mercado mercado) async {
+  Future<void> addProduto(
+      controllerProduto, controllerValor, Mercado mercado, context) async {
     try {
-      final response = await http.post(
+      final response = await http
+          .post(
         Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'),
         body: json.encode(
           {
-            "produto": produto.nomeProduto,
-            "valor": produto.valorProduto,
+            "produto": controllerProduto,
+            "valor": controllerValor,
           },
         ),
+      ).then(
+        (response) {
+          final id = json.decode(response.body)['name'];
+          mercado.produtos.add(
+            Produto(
+              id: id,
+              nomeProduto: controllerProduto,
+              valorProduto: controllerValor,
+            ),
+          );
+          carregarProdutos(mercado);
+        },
       );
-
-      final id = json.decode(response.body)['name'];
-      mercado.produtos.add(
-        Produto(
-          id: id,
-          nomeProduto: produto.nomeProduto,
-          valorProduto: produto.valorProduto,
-        ),
-      );
-      //print(_items.length);
-      //print(List<Produto>);
       notifyListeners();
     } catch (_) {
-      print('algum erro!');
+      _showDialog(context);
     }
-    //if (_items[mercadoId] == null) {
-    //  _items[mercadoId] = [];
-    //}
-   // print('notify ' + items.toString());
-    ////print();
-    //items[mercadoId]!.add(produto);
+  }
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          title: Text('Ocorreu algum erro!'),
+          content: Text('Verifique sua conexão.'),
+        );
+      },
+    );
   }
 
   // TODO estudar como utilizar lista no dart
-  void updateProduto(Produto produto, Mercado mercado) {
-      int index = mercado.produtos.indexWhere((p) => p.id == produto.id);
-    //int index = _items[mercadoId]!.indexWhere((p) => p.id == produto.id);
-    print(index);
+  Future<void> editarProduto(Produto produto, Mercado mercado,
+    String controllerProduto, double controllerValor) async {
+    int index = _items.indexWhere((p) => p.id == produto.id);
+
+    final novoProduto = Produto(
+      id: produto.id,
+      nomeProduto: controllerProduto,
+      valorProduto: controllerValor,
+    );
 
     if (index >= 0) {
-      mercado.produtos[index] = produto;
+      await http.patch(
+          Uri.parse(
+              '${Constantes.Url}/${mercado.id}/produtos/${produto.id}.json'),
+          body: jsonEncode({
+            "produto": controllerProduto,
+            "valor": controllerValor,
+          }));
+      _items[index] = novoProduto;
       notifyListeners();
     }
     print('Ocorreu algum erro!');
   }
 
-  void pp(String controllerProduto, double controllerValor, Mercado mercado,
-      produtoId) {
-    print(controllerProduto);
-    final novoProduto = Produto(
-      id: produtoId,
-      nomeProduto: controllerProduto,
-      valorProduto: controllerValor,
-    );
-    updateProduto(novoProduto, mercado);
-  }
-
-  void excluirProduto(Produto produto, Mercado mercado) {
-    int index = mercado.produtos.indexWhere((p) => p.id == produto.id);
-    //print(items[mercadoId]!.length);
+  Future<void> excluirProduto(Produto produto, Mercado mercado) async {
+    int index = _items.indexWhere((p) => p.id == produto.id);
 
     if (index >= 0) {
-      //final produto = _items[index];
-      mercado.produtos.remove(produto);
+      final produto = _items[index];
+      _items.remove(produto);
+      notifyListeners();
+      final resposta = await http.delete(
+        Uri.parse('${Constantes.Url}/${mercado.id}/produtos/${produto.id}.json'),
+      );
     }
-    notifyListeners();
-    //print(items[mercadoId]!.length);
   }
 }

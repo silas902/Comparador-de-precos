@@ -2,64 +2,64 @@ import 'dart:convert';
 import 'package:comparador_de_precos/constantes/constantes.dart';
 import 'package:comparador_de_precos/models/mercado.dart';
 import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class MercadoProvider extends ChangeNotifier {
-  final List<Mercado> _items = [
-    //Mercado(id: 'p1', nome: 'BomPreço'),
-    //Mercado(id: 'p2', nome: 'Atacadão'),
-    //Mercado(id: 'p3', nome: 'Redmix'),
-  ];
-  final List<Produto> _itemsP = [];
+  final List<Mercado> _items = [];
 
   List<Mercado> get items => [..._items];
-  List<Produto> get itemsP => _itemsP;
-  Future<void> carregarMercados() async {
+
+  bool isLoading = true;
+
+  Future<void> carregarMercados(BuildContext context,) async {
+    _items.clear();
     final response = await http.get(Uri.parse('${Constantes.Url}.json'));
     Map<String, dynamic> dados = jsonDecode(response.body);
     print(jsonDecode(response.body));
-    dados.forEach((mercadoId, mercadoDados) {
-      dados[mercadoId]['produtos'].forEach(
-        (key, value) {
-          itemsP.add(Produto(
-            id: key,
-            nomeProduto: value['produto'],
-            valorProduto: value['valor'],
-          ));
-          _items.add(
-            Mercado(
-              produtos: _itemsP, //mercadoDados['produtos'],
-              id: mercadoId,
-              nome: mercadoDados['nome'].toString(),
-            ),
-          );
-        },
-      );notifyListeners();
-    }); 
-   
+
+    dados.forEach(
+      (mercadoId, mercadoDados) {
+        _items.add(
+          Mercado(
+            produtos: [],
+            id: mercadoId,
+            nome: mercadoDados['nome'].toString(),
+          ),
+        );
+      },
+    );
+    //isLoading = false;
+    notifyListeners();
   }
 
   Future<void> addMercado(controllerMercadoNome, context) async {
     try {
       final response = await http.post(
         Uri.parse('${Constantes.Url}.json'),
-        body: json.encode({
-          'nome': controllerMercadoNome,
-        }),
+        body: json.encode(
+          {
+            'nome': controllerMercadoNome,
+          },
+        ),
       );
-
+       isLoading = false;
       final id = json.decode(response.body)['name'];
-      _items.add(Mercado(
-        id: id,
-        nome: controllerMercadoNome,
-        produtos: [],
-      ));
+      _items.add(
+        Mercado(
+          id: id,
+          nome: controllerMercadoNome,
+          produtos: [],
+        ),
+      );
       notifyListeners();
+      Navigator.pop(context);
     } catch (_) {
       _showDialog(context);
     }
-  }
+  } 
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -68,9 +68,7 @@ class MercadoProvider extends ChangeNotifier {
         return const AlertDialog(
           title: Text('Ocorreu algum erro!'),
           content: Text('Verifique sua conexão.'),
-          actions: [
-            //TextButton(onPressed: () {Navigator.pop(context)}, child: Text('Ok');)
-          ],
+          actions: [],
         );
       },
     );
@@ -86,10 +84,14 @@ class MercadoProvider extends ChangeNotifier {
     );
 
     if (index >= 0) {
-      await http.patch(Uri.parse('${Constantes.Url}/${mercado.id}.json'),
-        body: jsonEncode({
-         'nome': contralerEditMercado,
-          }));
+      await http.patch(
+        Uri.parse('${Constantes.Url}/${mercado.id}.json'),
+        body: jsonEncode(
+          {
+            'nome': contralerEditMercado,
+          },
+        ),
+      );
       _items[index] = novoMercado;
       notifyListeners();
     }
