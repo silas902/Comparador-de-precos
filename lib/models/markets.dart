@@ -1,5 +1,5 @@
 //Todo add produto
-import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/models/product.dart';
 
 class Mercado {
   final List<Produto> produtos;

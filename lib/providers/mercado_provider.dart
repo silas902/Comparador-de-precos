@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:comparador_de_precos/constantes/constantes.dart';
-import 'package:comparador_de_precos/models/mercado.dart';
-import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/constants/constants.dart';
+import 'package:comparador_de_precos/models/markets.dart';
+import 'package:comparador_de_precos/models/product.dart';
+import 'package:comparador_de_precos/providers/autenticacao_provider.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -13,10 +14,12 @@ class MercadoProvider extends ChangeNotifier {
   List<Mercado> get items => [..._items];
 
   bool isLoading = true;
+  
 
   Future<void> carregarMercados(BuildContext context,) async {
+    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     _items.clear();
-    final response = await http.get(Uri.parse('${Constantes.Url}.json'));
+    final response = await http.get(Uri.parse('${Constantes.Url}/${auth.usuario!.uid}.json'));
     Map<String, dynamic> dados = jsonDecode(response.body);
     print(jsonDecode(response.body));
 
@@ -36,9 +39,11 @@ class MercadoProvider extends ChangeNotifier {
   }
 
   Future<void> addMercado(controllerMercadoNome, context) async {
+   final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
+    
     try {
       final response = await http.post(
-        Uri.parse('${Constantes.Url}.json'),
+        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}.json'),
         body: json.encode(
           {
             'nome': controllerMercadoNome,
@@ -74,7 +79,8 @@ class MercadoProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> editarMercado(Mercado mercado, contralerEditMercado) async {
+  Future<void> editarMercado(Mercado mercado, contralerEditMercado, context) async {
+    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     int index = _items.indexWhere((p) => p.id == mercado.id);
 
     final novoMercado = Mercado(
@@ -85,7 +91,7 @@ class MercadoProvider extends ChangeNotifier {
 
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Constantes.Url}/${mercado.id}.json'),
+        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}.json'),
         body: jsonEncode(
           {
             'nome': contralerEditMercado,
@@ -97,7 +103,8 @@ class MercadoProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> excluirMercado(Mercado mercado) async {
+  Future<void> excluirMercado(Mercado mercado, context) async {
+    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     int index = _items.indexWhere((p) => p.id == mercado.id);
 
     if (index >= 0) {
@@ -106,7 +113,7 @@ class MercadoProvider extends ChangeNotifier {
       notifyListeners();
 
       final resposta = await http.delete(
-        Uri.parse('${Constantes.Url}/${mercado.id}.json'),
+        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}.json'),
       );
     }
   }

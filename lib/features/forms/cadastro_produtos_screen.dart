@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:comparador_de_precos/models/mercado.dart';
-import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/models/markets.dart';
+import 'package:comparador_de_precos/models/product.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

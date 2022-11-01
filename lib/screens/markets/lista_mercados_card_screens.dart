@@ -1,5 +1,5 @@
-import 'package:comparador_de_precos/features/formularios/mercado_edit_screens.dart';
-import 'package:comparador_de_precos/models/mercado.dart';
+import 'package:comparador_de_precos/features/forms/mercado_edit_screens.dart';
+import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/features/lista_produtos_mercado/list_produtos_card_screens.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class ListaMercadosCardScreens extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                provider.excluirMercado(mercado);
+                provider.excluirMercado(mercado, context);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],

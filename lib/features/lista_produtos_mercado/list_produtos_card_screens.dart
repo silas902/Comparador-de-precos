@@ -1,7 +1,7 @@
-import 'package:comparador_de_precos/features/formularios/cadastro_produtos_screen.dart';
-import 'package:comparador_de_precos/features/formularios/edit_produto_screen.dart';
-import 'package:comparador_de_precos/models/mercado.dart';
-import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/features/forms/cadastro_produtos_screen.dart';
+import 'package:comparador_de_precos/features/forms/edit_produto_screen.dart';
+import 'package:comparador_de_precos/models/markets.dart';
+import 'package:comparador_de_precos/models/product.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado).then((value) => setState(() {
+    Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado, context).then((value) => setState(() {
       _isLoading = false;
     }));
   }
@@ -45,7 +45,7 @@ class _ProdutosDoMercadoScreenState extends State<ProdutosDoMercadoScreen> {
         builder: (context, mercadoProdutosProvider, child) {
           List<Produto> produtosDoMercado = widget.mercado.produtos;
           return RefreshIndicator(
-            onRefresh: () async => await Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado),
+            onRefresh: () async => await Provider.of<MercadoProdutosProvider>(context, listen: false).carregarProdutos(widget.mercado, context),
             child: ListView.builder(
               itemCount: mercadoProdutosProvider.items.length,
               itemBuilder: (context, index) {

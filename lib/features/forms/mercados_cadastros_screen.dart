@@ -1,7 +1,7 @@
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
-import '../../models/mercado.dart';
+import '../../models/markets.dart';
 
 class MercadoCadastrosScreen extends StatefulWidget {
 

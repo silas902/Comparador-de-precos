@@ -1,20 +1,23 @@
 import 'dart:convert';
 
-import 'package:comparador_de_precos/constantes/constantes.dart';
-import 'package:comparador_de_precos/models/mercado.dart';
-import 'package:comparador_de_precos/models/produto.dart';
+import 'package:comparador_de_precos/constants/constants.dart';
+import 'package:comparador_de_precos/models/markets.dart';
+import 'package:comparador_de_precos/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import 'autenticacao_provider.dart';
 
 class MercadoProdutosProvider extends ChangeNotifier {
   final List<Produto> _items = [];
 
   List<Produto> get items => _items;
 
-  Future<void> carregarProdutos(Mercado mercado) async {
+  Future<void> carregarProdutos(Mercado mercado, context) async {
+    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     _items.clear();
-    final response = await http
-        .get(Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'));
+    final response = await http.get(Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}/produtos.json'));
     Map<String, dynamic> dados = jsonDecode(response.body);
     dados.forEach(
       (produtoId, produtoDados) {
@@ -30,12 +33,12 @@ class MercadoProdutosProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addProduto(
-      controllerProduto, controllerValor, Mercado mercado, context) async {
+  Future<void> addProduto(controllerProduto, controllerValor, Mercado mercado, context) async {
+    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     try {
       final response = await http
           .post(
-        Uri.parse('${Constantes.Url}/${mercado.id}/produtos.json'),
+        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}/produtos.json'),
         body: json.encode(
           {
             "produto": controllerProduto,
@@ -52,7 +55,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
               valorProduto: controllerValor,
             ),
           );
-          carregarProdutos(mercado);
+          carregarProdutos(mercado, context);
         },
       );
       notifyListeners();
