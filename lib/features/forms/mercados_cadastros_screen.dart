@@ -4,7 +4,6 @@ import 'package:provider/src/provider.dart';
 import '../../models/markets.dart';
 
 class MercadoCadastrosScreen extends StatefulWidget {
-
   @override
   State<MercadoCadastrosScreen> createState() => _MercadoCadastrosScreenState();
 }
@@ -23,31 +22,44 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
     final controller = Provider.of<MercadoProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(251, 231, 180, 12),
         title: Text('Cadastro do Mercado'),
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: (){
-              controller.addMercado(_controllerMercadoNome.text, context);  
+            onPressed: () {
+              controller.addMercado(_controllerMercadoNome.text, context);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Form(
-          child: Column(
-            children: [      
-              TextFormField(
-                controller: _controllerMercadoNome,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(labelText: 'Mercado'),
-              ),  
-            ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color.fromARGB(240, 179, 178, 178),
+                Color.fromARGB(212, 0, 0, 0),
+              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            ),
           ),
-        ),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Form(
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _controllerMercadoNome,
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(labelText: 'Mercado'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

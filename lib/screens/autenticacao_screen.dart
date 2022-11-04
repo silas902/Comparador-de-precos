@@ -5,53 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AutenticacaoScreen extends StatefulWidget {
+class AutenticacaoScreen extends StatelessWidget {
   const AutenticacaoScreen();
 
-  @override
-  State<AutenticacaoScreen> createState() => _AutenticacaoScreenState();
-}
-
-class _AutenticacaoScreenState extends State<AutenticacaoScreen> {
   //
-  //Stream _connectivityStream = aut .onConnectivityChanged;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-        AutenticacaoProvider auth = Provider.of<AutenticacaoProvider>(context, listen: false);
-        auth.addListener(
-          () {
-            if (auth.usuario == null) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AutenticacaoScreen()));
-            } else {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        const ListaMercadosScreen(),
-                  ),
-                );
-              
-            }
-          },
-        );
-     // },
-    //);
-  }
-  @override
-  void dispose() {
-    
-    super.dispose();
-  }
-
-
-
-  //final Map<String, String> _autentDados = {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

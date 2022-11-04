@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:comparador_de_precos/constants/constants.dart';
 import 'package:comparador_de_precos/models/markets.dart';
@@ -11,66 +12,69 @@ import 'autenticacao_provider.dart';
 
 class MercadoProdutosProvider extends ChangeNotifier {
   final List<Produto> _items = [];
-
   List<Produto> get items => _items;
+  String _token;
+  String _userId;
+  MercadoProdutosProvider(this._token, this._userId);
 
   Future<void> carregarProdutos(Mercado mercado, context) async {
-    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
-    _items.clear();
-    final response = await http.get(Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}/produtos.json'));
-    Map<String, dynamic> dados = jsonDecode(response.body);
-    dados.forEach(
-      (produtoId, produtoDados) {
-        _items.add(
-          Produto(
-            id: produtoId,
-            nomeProduto: produtoDados["produto"],
-            valorProduto: produtoDados["valor"],
-          ),
-        );
-      },
-    );
-    notifyListeners();
+    try{
+      final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
+      _items.clear();
+      final response = await http.get(Uri.parse('${Constantes.Url}/$_userId/mercados/${mercado.id}/produtos.json?auth=$_token'));
+      print(response);
+      Map<String, dynamic> dados = jsonDecode(response.body);
+      dados.forEach(
+        (produtoId, produtoDados) {
+          _items.add(
+            Produto(
+              id: produtoId,
+              nomeProduto: produtoDados["produto"],
+              valorProduto: produtoDados["valor"],
+            ),
+          );
+        },
+      );
+      notifyListeners();
+
+    } catch (e) {
+      _showDialog(context, title: 'Algum Problema. ', content: 'Cadastre Um Produto ou Verifique sua Conexão.');
+    }
+    
   }
 
   Future<void> addProduto(controllerProduto, controllerValor, Mercado mercado, context) async {
     final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     try {
-      final response = await http
-          .post(
-        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}/produtos.json'),
+      final response = await http.post(Uri.parse('${Constantes.Url}/$_userId/mercados/${mercado.id}/produtos.json?auth=$_token'),
         body: json.encode(
           {
             "produto": controllerProduto,
             "valor": controllerValor,
           },
         ),
-      ).then(
-        (response) {
-          final id = json.decode(response.body)['name'];
-          mercado.produtos.add(
-            Produto(
-              id: id,
-              nomeProduto: controllerProduto,
-              valorProduto: controllerValor,
-            ),
-          );
-          carregarProdutos(mercado, context);
-        },
+      );
+      final id = json.decode(response.body)['name'];
+      _items.add(
+        Produto(
+          id: id,
+          nomeProduto: controllerProduto,
+          valorProduto: controllerValor,
+        ),
       );
       notifyListeners();
     } catch (_) {
-      _showDialog(context);
+      _showDialog(context,title: 'Algum Problema!', content: 'Verifique sua conexão');
     }
   }
 
-  void _showDialog(BuildContext context) {
+  void _showDialog(BuildContext context, {required String title, required String content}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AlertDialog(
-          title: Text('Ocorreu algum erro!'),
-          content: Text('Verifique sua conexão.'),
+        return  AlertDialog(
+          title: Text(title),
+          content: Text(content),
         );
       },
     );
@@ -90,7 +94,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
     if (index >= 0) {
       await http.patch(
           Uri.parse(
-              '${Constantes.Url}/${mercado.id}/produtos/${produto.id}.json'),
+              '${Constantes.Url}/$_userId/mercados/${mercado.id}/produtos.json?auth=$_token'),
           body: jsonEncode({
             "produto": controllerProduto,
             "valor": controllerValor,
@@ -109,7 +113,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
       _items.remove(produto);
       notifyListeners();
       final resposta = await http.delete(
-        Uri.parse('${Constantes.Url}/${mercado.id}/produtos/${produto.id}.json'),
+        Uri.parse('${Constantes.Url}/$_userId/mercados/${mercado.id}/produtos/${produto.id}.json?auth=$_token'),
       );
     }
   }

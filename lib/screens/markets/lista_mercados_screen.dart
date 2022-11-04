@@ -58,7 +58,7 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
     final _isLoadingMercado = Provider.of<MercadoProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red[300],
+        backgroundColor: Color.fromARGB(251, 231, 180, 12),
         title: Text('Comparador de Preços'),
         centerTitle: true,
         actions: [
@@ -73,36 +73,60 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
           ),
           IconButton(
             onPressed: () {
-
-              
-                Provider.of<AutenticacaoProvider>(context, listen: false).logout();           
-                Navigator.pop(context);
-              
-              
-            },
-                
+              Provider.of<AutenticacaoProvider>(context, listen: false).logout();           
+              Navigator.pop(context);
+            },    
             icon: Icon(Icons.logout),
           ),
         ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Consumer<MercadoProvider>(
-              builder: (context, mercadoProvider, child) => RefreshIndicator(
-                onRefresh: () async =>
-                    await Provider.of<MercadoProvider>(context, listen: false)
-                        .carregarMercados(context),
-                child: ListView.builder(
-                  itemCount: mercadoProvider.items.length,
-                  itemBuilder: (context, index) {
-                    return ListaMercadosCardScreens(
-                        mercado: mercadoProvider.items[index]);
-                  },
+      ? Center(
+          child: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    Color.fromARGB(240, 179, 178, 178),
+                    Color.fromARGB(212, 0, 0, 0),
+                  ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 ),
               ),
-            ),
+              Center(child: CircularProgressIndicator())
+            ]
+          )
+        )  
+      : Consumer<MercadoProvider>(
+          builder: (context, mercadoProvider, child) {
+           return Stack(
+             children: [
+               Container(
+                 decoration: const BoxDecoration(
+                   gradient: LinearGradient(colors: [
+                     Color.fromARGB(240, 179, 178, 178),
+                     Color.fromARGB(212, 0, 0, 0),
+                   ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                 ),
+               ),
+
+               RefreshIndicator(
+                 onRefresh: () async =>
+                     await Provider.of<MercadoProvider>(context, listen: false)
+                         .carregarMercados(context),
+                 child: ListView.builder(
+                   itemCount: mercadoProvider.items.length,
+                   itemBuilder: (context, index) {
+                     return ListaMercadosCardScreens(
+                         mercado: mercadoProvider.items[index]);
+                   },
+                 ),
+               ) 
+             ],
+
+            );
+          }
+        ),  
+        
     );
   }
 }

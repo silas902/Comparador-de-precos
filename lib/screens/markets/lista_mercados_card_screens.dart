@@ -1,6 +1,6 @@
 import 'package:comparador_de_precos/features/forms/mercado_edit_screens.dart';
 import 'package:comparador_de_precos/models/markets.dart';
-import 'package:comparador_de_precos/features/lista_produtos_mercado/list_produtos_card_screens.dart';
+import 'package:comparador_de_precos/screens/products/list_procuts_screen.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,7 @@ class ListaMercadosCardScreens extends StatelessWidget {
           color: Colors.grey,
           borderRadius: BorderRadius.circular(10),
         ),
-        margin: EdgeInsets.all(7),
+        margin: const EdgeInsets.all(7),
         padding: const EdgeInsets.all(10),
         //color: Colors.grey,
         child: Row(
@@ -55,21 +55,20 @@ class ListaMercadosCardScreens extends StatelessWidget {
         height: 100,
         child: Container(
           child: Card(
-            
             margin: const EdgeInsets.all(6),
-            color: Colors.grey[200],
+            color: Colors.black38,
             elevation: 10,
             child: InkWell(
               onTap: () {
                 Navigator.push(
-                    context,MaterialPageRoute(builder: (context) => ProdutosDoMercadoScreen(mercado)));
+                    context,MaterialPageRoute(builder: (context) => ListProductsScreen(mercado)));
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   ListTile(
-                    title: Text(mercado.nome.toString()),
-                    subtitle: const Text('Ultimo Acesso:'),
+                    title: Text(mercado.nome.toString(), style: const TextStyle(color: Colors.white,fontStyle: FontStyle.italic),),
+                    subtitle: const Text('Ultimo Acesso:',style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic),),
                     trailing: IconButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => MercadoEditSceens(mercado: mercado),));

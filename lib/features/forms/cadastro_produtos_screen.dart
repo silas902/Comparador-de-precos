@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 class CadastroProdutosScreen extends StatefulWidget {
   final Mercado mercado;
   CadastroProdutosScreen({required this.mercado});
-  
 
   @override
   State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
@@ -34,44 +33,48 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Novo Produto'),
+        backgroundColor: Color.fromARGB(251, 231, 180, 12),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              //final novoProduto = Produto(
-              //  id: UniqueKey().toString(),
-              //  nomeProduto: _controllerProduto.text,
-              //  valorProduto: double.parse(_controllerValor.text),
-              //);
-
-              controller.addProduto(_controllerProduto.text, double.parse(_controllerValor.text), widget.mercado, context);
+              controller.addProduto(_controllerProduto.text,
+              double.parse(_controllerValor.text), widget.mercado, context);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _controllerProduto,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(labelText: 'Produto'),
-              ),
-              TextFormField(
-                controller: _controllerValor,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Valor'),
-              ),
-            ],
+      body: Stack(children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [
+              Color.fromARGB(240, 179, 178, 178),
+              Color.fromARGB(212, 0, 0, 0),
+            ], begin: Alignment.topLeft, end: Alignment.bottomRight),
           ),
-
-          //key: _formKey,
         ),
-      ),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: Form(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _controllerProduto,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(labelText: 'Produto'),
+                ),
+                TextFormField(
+                  controller: _controllerValor,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Valor'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }

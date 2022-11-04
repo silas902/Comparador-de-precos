@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../constants/constants.dart';
+import '../exceptions/auth_exception.dart';
 
 
 class AutenticacaoProvider extends ChangeNotifier{
@@ -7,9 +13,9 @@ class AutenticacaoProvider extends ChangeNotifier{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _token;
   String? _email;
-  String? _uid;
+  String? _userId;
   DateTime? _expiryDate;
-  User? usuario;
+  //User? usuario;
   bool isLoading = true;
 
   bool get isAuth {
@@ -25,37 +31,37 @@ class AutenticacaoProvider extends ChangeNotifier{
     return isAuth ? _email : null;
   }
 
-  String? get uid {
-    return isAuth ? _uid : null;
+  String? get userId {
+    return isAuth ? _userId : null;
   }
 
   //Future<void> _authenticate( String email, String passeord) {
   //  
   //}
 
-  AutenticacaoProvider() {
-    _authCheck();
-  }
-
-  _authCheck() {
-    _auth.authStateChanges().listen((User? user) {
-      usuario = (user == null) ? null: user;
-      isLoading = false;
-      notifyListeners();
-    });
-    
-    
-  }
-  _getUser() {
-    
-    usuario = _auth.currentUser;
-    notifyListeners();
-  }
+  //AutenticacaoProvider() {
+  //  _authCheck();
+  //}
+//
+  //_authCheck() {
+  //  _auth.authStateChanges().listen((User? user) {
+  //    usuario = (user == null) ? null: user;
+  //    isLoading = false;
+  //    notifyListeners();
+  //  });
+  //  
+  //  
+  //}
+  //_getUser() {
+  //  
+  //  usuario = _auth.currentUser;
+  //  notifyListeners();
+  //}
   
-  Future<void> registrar(String email, String senha) async {
+  //Future<void> registrar(String email, String senha) async {
     //try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: senha);
-      _getUser();
+     // await _auth.createUserWithEmailAndPassword(email: email, password: senha);
+      //_getUser();
     //} on FirebaseAuthException catch (e) {
     //  if(e.code == 'weak-password') {
     //    throw execessaoAutenticacao('A senha e muinto fraca!');
@@ -64,31 +70,112 @@ class AutenticacaoProvider extends ChangeNotifier{
     //  }
     //}
 
-  }
+  //}
+  Future<void> _authenticate(String email, String password, String urlFragment) async {
+    print(urlFragment);
+    print(Constantes.webApiKey);
+    final _url = 'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constantes.webApiKey}';
 
-  Future<void> login(String email, String senha) async {
-    
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: senha);
-      print(usuario);
-      _getUser();
-    } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found') {
-        throw execessaoAutenticacao('Email não encontrado. Cadastre-se.');
-      } else if (e.code == 'wrong-password') {
-        throw execessaoAutenticacao('Senha incorreta. Tente novamente');
-      }
+    final response = await http.post(Uri.parse(_url),
+    body: jsonEncode({
+      'email': email,
+      'password': password,
+      'returnSecureToken': true,
+    }));
+
+    final body = jsonDecode(response.body);
+
+    if (body['error'] != null) {
+      throw AuthException(body['error']['message']);
+    } else {
+      _token = body['idToken'];
+      _email = body['email'];
+      _userId = body['localId'];
+
+      _expiryDate = DateTime.now().add(
+        Duration(seconds: int.parse(body['expiresIn'])),
+      );
+      notifyListeners();
     }
 
+    print(body);
   }
+
+ // Future<void> loginE(String email, String senha) async {
+ //   
+ //   try {
+ //     //_authenticate(email, senha, 'signIn');
+ //   } on FirebaseAuthException catch (e) {
+ //     if(e.code == 'user-not-found') {
+ //       throw execessaoAutenticacao('Email não encontrado. Cadastre-se.');
+ //     } else if (e.code == 'wrong-password') {
+ //       throw execessaoAutenticacao('Senha incorreta. Tente novamente');
+ //     }
+ //   }
+//
+ // }
+  //Future<void> loginn(String email, String password) async {
+//
+  //  final response = await http.post(
+  //     Uri.parse('${Constantes.urlLogin}'),
+  //     body: json.encode(
+  //       {
+  //         'email': email,
+  //          'password': password,
+  //          'returnSecureToken': true,
+  //       },
+  //     ),
+  //   );
+  //   print(response.body);
+  //   //final id = json.decode(response.body)['name'];
+  //   //_items.add(
+  //   //  Mercado(
+  //   //    id: id,
+  //   //    nome: controllerMercadoNome,
+  //   //    produtos: [],
+  //   //  ),
+  //   //);
+//
+  //}
 
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
     //_getUser();
   }
 
+  //Future<void> signUp(String email, String password) async {
+  //
+  //  final response = await http.post(
+  //     Uri.parse('${Constantes.urlSingUp}'),
+  //     body: json.encode(
+  //       {
+  //         'email': email,
+  //          'password': password,
+  //          'returnSecureToken': true,
+  //       },
+  //     ),
+  //   );
+  //   print(response.body);
+  //   //final id = json.decode(response.body)['name'];
+  //   //_items.add(
+  //   //  Mercado(
+  //   //    id: id,
+  //   //    nome: controllerMercadoNome,
+  //   //    produtos: [],
+  //   //  ),
+  //   //);
+  //}
+  Future<void> signup(String email, String password) async {
+    return _authenticate(email, password, 'signUp');
+  }
+
+  Future<void> login(String email, String password) async {
+    return _authenticate(email, password, 'signInWithPassword');
+  }
+
 
 }
+
 
 class execessaoAutenticacao implements Exception {
   String message;

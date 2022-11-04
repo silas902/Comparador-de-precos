@@ -35,38 +35,50 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(251, 231, 180, 12),
         title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              control.editarProduto(widget.produto, widget.mercado, _controllerProduto.text, double.parse(_controllerValor.text));
+              control.editarProduto(widget.produto, widget.mercado,
+                  _controllerProduto.text, double.parse(_controllerValor.text));
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _controllerProduto,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(labelText: 'Valor'),
-              ),
-              TextFormField(
-                controller: _controllerValor,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Valor'),
-              ),
-            ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color.fromARGB(240, 179, 178, 178),
+                Color.fromARGB(212, 0, 0, 0),
+              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            ),
           ),
-
-          //key: _formKey,
-        ),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Form(
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _controllerProduto,
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(labelText: 'Valor'),
+                  ),
+                  TextFormField(
+                    controller: _controllerValor,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Valor'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

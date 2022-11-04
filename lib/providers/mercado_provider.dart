@@ -9,17 +9,18 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class MercadoProvider extends ChangeNotifier {
-  final List<Mercado> _items = [];
-
+  String _token;
+  String _userId;
+  List<Mercado> _items = [];
   List<Mercado> get items => [..._items];
-
   bool isLoading = true;
-  
+
+  MercadoProvider(this._token,this._items, this._userId);
 
   Future<void> carregarMercados(BuildContext context,) async {
     final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     _items.clear();
-    final response = await http.get(Uri.parse('${Constantes.Url}/${auth.usuario!.uid}.json'));
+    final response = await http.get(Uri.parse('${Constantes.Url}/$_userId/mercados.json?auth=$_token'));
     Map<String, dynamic> dados = jsonDecode(response.body);
     print(jsonDecode(response.body));
 
@@ -34,16 +35,16 @@ class MercadoProvider extends ChangeNotifier {
         );
       },
     );
-    //isLoading = false;
+    isLoading = false;
     notifyListeners();
   }
 
   Future<void> addMercado(controllerMercadoNome, context) async {
    final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
     
-    try {
+   // try {
       final response = await http.post(
-        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}.json'),
+        Uri.parse('${Constantes.Url}/$_userId/mercados.json?auth=$_token'),
         body: json.encode(
           {
             'nome': controllerMercadoNome,
@@ -60,12 +61,12 @@ class MercadoProvider extends ChangeNotifier {
         ),
       );
       notifyListeners();
-      Navigator.pop(context);
-    } catch (_) {
-      _showDialog(context);
-    }
+      //Navigator.pop(context);
+   // } catch (_) {
+    //  _showDialog(context);
+   // }
   } 
-
+  
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -91,7 +92,7 @@ class MercadoProvider extends ChangeNotifier {
 
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}.json'),
+        Uri.parse('${Constantes.Url}/$_userId/mercados.json?auth=$_token'),
         body: jsonEncode(
           {
             'nome': contralerEditMercado,
@@ -113,7 +114,7 @@ class MercadoProvider extends ChangeNotifier {
       notifyListeners();
 
       final resposta = await http.delete(
-        Uri.parse('${Constantes.Url}/${auth.usuario!.uid}/${mercado.id}.json'),
+        Uri.parse('${Constantes.Url}/$_userId/mercados/${mercado.id}.json?auth=$_token'),
       );
     }
   }

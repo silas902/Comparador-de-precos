@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class MercadoEditSceens extends StatefulWidget {
   final Mercado mercado;
-  const MercadoEditSceens({ Key? key, required this.mercado }) : super(key: key);
+  const MercadoEditSceens({Key? key, required this.mercado}) : super(key: key);
 
   @override
   State<MercadoEditSceens> createState() => _MercadoEditSceensState();
@@ -27,31 +27,45 @@ class _MercadoEditSceensState extends State<MercadoEditSceens> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(251, 231, 180, 12),
         title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              control.editarMercado(widget.mercado, _controllerEditMercado.text, context);
+              control.editarMercado(
+                  widget.mercado, _controllerEditMercado.text, context);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _controllerEditMercado,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(labelText: 'Valor'),
-              ),
-            ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Color.fromARGB(240, 179, 178, 178),
+                Color.fromARGB(212, 0, 0, 0),
+              ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            ),
           ),
-        ),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Form(
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _controllerEditMercado,
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(labelText: 'Valor'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
