@@ -17,7 +17,6 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
   bool _showPassword = false;
   final formKey = GlobalKey<FormState>();
 
-
   late bool isLogin;
   late String actionButton;
   late String toggleButton;
@@ -35,13 +34,11 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
     _controllerSenhaConfirm = TextEditingController();
   }
 
-  
-
   setFormAction(isLogin) {
     if (mounted) {
       setState(() {
         //isLogin = acao;
-        if (isLogin) {     
+        if (isLogin) {
           actionButton = 'Login';
           toggleButton = 'Cadastre-se';
         } else {
@@ -51,7 +48,8 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
       });
     }
   }
-@override
+
+  @override
   void dispose() {
     super.dispose();
     _controllerEmail.dispose();
@@ -77,19 +75,19 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
 
   Future<void> login() async {
     final auth = Provider.of<AutenticacaoProvider>(context, listen: false);
-    try{
+    try {
       if (isLogin) {
         await auth.login(_controllerEmail.text, _controllerSenha.text);
       } else {
-        context.read<AutenticacaoProvider>().signup(_controllerEmail.text, _controllerSenha.text);
-      } 
+        context
+            .read<AutenticacaoProvider>()
+            .signup(_controllerEmail.text, _controllerSenha.text);
+      }
     } on AuthException catch (error) {
       _showErrorDialo(error.toString());
     } catch (error) {
       _showErrorDialo('Ocorreu um errro inesperado!');
     }
-   
-   
   }
 
   @override
@@ -114,11 +112,10 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
               },
               decoration: const InputDecoration(
                 focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black)),
-                labelText: 'Email',
-                labelStyle: TextStyle(
-                  color: Colors.black,
+                  borderSide: BorderSide(color: Colors.black),
                 ),
+                labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.black),
                 prefixIcon: Padding(
                   child: Icon(Icons.email, color: Colors.black),
                   padding: EdgeInsets.all(5),
@@ -144,9 +141,7 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
                 focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
                 labelText: 'Senha',
-                labelStyle: const TextStyle(
-                  color: Colors.black,
-                ),
+                labelStyle: const TextStyle(color: Colors.black),
                 prefixIcon: const Padding(
                   child: Icon(Icons.key, color: Colors.black),
                   padding: EdgeInsets.all(5),
@@ -167,7 +162,7 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
               ),
             ),
           ),
-          if (isLogin == false) 
+          if (isLogin == false)
             Container(
               margin: const EdgeInsets.all(20),
               child: TextFormField(
@@ -182,11 +177,10 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
                 },
                 decoration: const InputDecoration(
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black)),
-                  labelText: 'Confirmar Senha',
-                  labelStyle: TextStyle(
-                    color: Colors.black,
+                    borderSide: BorderSide(color: Colors.black),
                   ),
+                  labelText: 'Confirmar Senha',
+                  labelStyle: TextStyle(color: Colors.black),
                   prefixIcon: Padding(
                     child: Icon(Icons.key, color: Colors.black),
                     padding: EdgeInsets.all(5),
@@ -201,9 +195,9 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                
                 TextButton(
-                  onPressed: () => setFormAction(isLogin ? isLogin = false : isLogin = true ),
+                  onPressed: () =>
+                      setFormAction(isLogin ? isLogin = false : isLogin = true),
                   child: Text(
                     toggleButton,
                     style: const TextStyle(color: Colors.black),
@@ -212,7 +206,7 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
                 const Padding(padding: EdgeInsets.symmetric(horizontal: 30)),
                 TextButton(
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {                   
+                    if (formKey.currentState!.validate()) {
                       login();
                     }
                   },

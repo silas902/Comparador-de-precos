@@ -1,12 +1,8 @@
 import 'package:comparador_de_precos/forms/formulario_autenticacao.dart';
-import 'package:comparador_de_precos/providers/autenticacao_provider.dart';
-import 'package:comparador_de_precos/screens/markets/lista_mercados_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AutenticacaoScreen extends StatelessWidget {
-  const AutenticacaoScreen();
+  const AutenticacaoScreen({Key? key}) : super(key: key);
 
   //
   @override
@@ -26,8 +22,7 @@ class AutenticacaoScreen extends StatelessWidget {
           SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //Text(),
+              children: const [
                 FormularioAutenticacao(),
               ],
             ),

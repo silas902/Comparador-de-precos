@@ -5,6 +5,7 @@ import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:ffi';
 
 void main() async {
   await WidgetsFlutterBinding.ensureInitialized();

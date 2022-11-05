@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 class CadastroProdutosScreen extends StatefulWidget {
   final Mercado mercado;
-  const CadastroProdutosScreen({Key? key, required this.mercado}) : super(key: key);
+  const CadastroProdutosScreen({Key? key, required this.mercado})
+      : super(key: key);
 
   @override
   State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
@@ -35,7 +36,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
           IconButton(
             onPressed: () {
               controller.addProduto(_controllerProduto.text,
-              double.parse(_controllerValor.text), widget.mercado, context);
+                  double.parse(_controllerValor.text), widget.mercado, context);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),
@@ -57,14 +58,28 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  cursorColor: Colors.black,
                   controller: _controllerProduto,
                   keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(labelText: 'Produto'),
+                  decoration: const InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    labelText: 'Produto',
+                    labelStyle: TextStyle(color: Colors.black),
+                  ),
                 ),
                 TextFormField(
+                  cursorColor: Colors.black,
                   controller: _controllerValor,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Valor'),
+                  decoration: const InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    labelText: 'Valor',
+                    labelStyle: TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             ),

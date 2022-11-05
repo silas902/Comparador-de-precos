@@ -27,7 +27,7 @@ class _MercadoEditSceensState extends State<MercadoEditSceens> {
 
     return Scaffold(
       appBar: AppBar(
-       backgroundColor: Color.fromARGB(255, 12, 12, 12),
+        backgroundColor: Color.fromARGB(255, 12, 12, 12),
         title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
@@ -57,9 +57,16 @@ class _MercadoEditSceensState extends State<MercadoEditSceens> {
               child: Column(
                 children: [
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _controllerEditMercado,
                     keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Valor'),
+                    decoration: const InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Valor',
+                      labelStyle: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ],
               ),

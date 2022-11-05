@@ -22,8 +22,10 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
   @override
   void initState() {
     super.initState();
-    _controllerProduto = TextEditingController(text: widget.produto.nomeProduto);
-    _controllerValor = TextEditingController(text: widget.produto.valorProduto.toString());
+    _controllerProduto =
+        TextEditingController(text: widget.produto.nomeProduto);
+    _controllerValor =
+        TextEditingController(text: widget.produto.valorProduto.toString());
   }
 
   @override
@@ -62,14 +64,28 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _controllerProduto,
                     keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Valor'),
+                    decoration: const InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Valor',
+                      labelStyle: TextStyle(color: Colors.black),
+                    ),
                   ),
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _controllerValor,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(labelText: 'Valor'),
+                    decoration: const InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Valor',
+                      labelStyle: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ],
               ),

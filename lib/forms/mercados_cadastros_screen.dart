@@ -51,9 +51,16 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    cursorColor: Colors.black,
                     controller: _controllerMercadoNome,
                     keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Mercado'),
+                    decoration: const InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: 'Mercado',
+                      labelStyle: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ],
               ),
