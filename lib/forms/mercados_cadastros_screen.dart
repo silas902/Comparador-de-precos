@@ -1,7 +1,7 @@
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
-import '../../models/markets.dart';
+import '../models/markets.dart';
 
 class MercadoCadastrosScreen extends StatefulWidget {
   @override
@@ -22,8 +22,8 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
     final controller = Provider.of<MercadoProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 231, 180, 12),
-        title: Text('Cadastro do Mercado'),
+        backgroundColor: const Color.fromARGB(255, 12, 12, 12),
+        title: const Text('Cadastro do Mercado'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -31,7 +31,7 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
               controller.addMercado(_controllerMercadoNome.text, context);
               Navigator.pop(context);
             },
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
           )
         ],
       ),
@@ -46,7 +46,7 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Form(
               child: Column(
                 children: [

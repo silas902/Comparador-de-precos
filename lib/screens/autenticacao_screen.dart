@@ -1,4 +1,4 @@
-import 'package:comparador_de_precos/features/forms/formulario_autenticacao.dart';
+import 'package:comparador_de_precos/forms/formulario_autenticacao.dart';
 import 'package:comparador_de_precos/providers/autenticacao_provider.dart';
 import 'package:comparador_de_precos/screens/markets/lista_mercados_screen.dart';
 import 'package:firebase_core/firebase_core.dart';

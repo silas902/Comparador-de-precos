@@ -97,74 +97,15 @@ class AutenticacaoProvider extends ChangeNotifier{
       );
       notifyListeners();
     }
-
     print(body);
   }
 
- // Future<void> loginE(String email, String senha) async {
- //   
- //   try {
- //     //_authenticate(email, senha, 'signIn');
- //   } on FirebaseAuthException catch (e) {
- //     if(e.code == 'user-not-found') {
- //       throw execessaoAutenticacao('Email não encontrado. Cadastre-se.');
- //     } else if (e.code == 'wrong-password') {
- //       throw execessaoAutenticacao('Senha incorreta. Tente novamente');
- //     }
- //   }
-//
- // }
-  //Future<void> loginn(String email, String password) async {
-//
-  //  final response = await http.post(
-  //     Uri.parse('${Constantes.urlLogin}'),
-  //     body: json.encode(
-  //       {
-  //         'email': email,
-  //          'password': password,
-  //          'returnSecureToken': true,
-  //       },
-  //     ),
-  //   );
-  //   print(response.body);
-  //   //final id = json.decode(response.body)['name'];
-  //   //_items.add(
-  //   //  Mercado(
-  //   //    id: id,
-  //   //    nome: controllerMercadoNome,
-  //   //    produtos: [],
-  //   //  ),
-  //   //);
-//
-  //}
-
-  Future<void> logout() async {
+  Future<void> logout(context) async {
     await FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
     //_getUser();
   }
 
-  //Future<void> signUp(String email, String password) async {
-  //
-  //  final response = await http.post(
-  //     Uri.parse('${Constantes.urlSingUp}'),
-  //     body: json.encode(
-  //       {
-  //         'email': email,
-  //          'password': password,
-  //          'returnSecureToken': true,
-  //       },
-  //     ),
-  //   );
-  //   print(response.body);
-  //   //final id = json.decode(response.body)['name'];
-  //   //_items.add(
-  //   //  Mercado(
-  //   //    id: id,
-  //   //    nome: controllerMercadoNome,
-  //   //    produtos: [],
-  //   //  ),
-  //   //);
-  //}
   Future<void> signup(String email, String password) async {
     return _authenticate(email, password, 'signUp');
   }
@@ -173,11 +114,4 @@ class AutenticacaoProvider extends ChangeNotifier{
     return _authenticate(email, password, 'signInWithPassword');
   }
 
-
-}
-
-
-class execessaoAutenticacao implements Exception {
-  String message;
-  execessaoAutenticacao(this.message);
 }

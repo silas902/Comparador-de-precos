@@ -3,7 +3,7 @@ import 'dart:ffi';
 
 import 'package:comparador_de_precos/providers/autenticacao_provider.dart';
 import 'package:comparador_de_precos/screens/markets/lista_mercados_card_screens.dart';
-import 'package:comparador_de_precos/features/forms/mercados_cadastros_screen.dart';
+import 'package:comparador_de_precos/forms/mercados_cadastros_screen.dart';
 import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
       setState(() {
         _isLoading = false;
       });
-    }); //isLoadingTemporizador();
+    });
   }
 
   @override
@@ -58,8 +58,8 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
     final _isLoadingMercado = Provider.of<MercadoProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 231, 180, 12),
-        title: Text('Comparador de Preços'),
+        backgroundColor: const Color.fromARGB(255, 12, 12, 12),
+        title: const Text('Comparador de Preços'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -73,10 +73,10 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
           ),
           IconButton(
             onPressed: () {
-              Provider.of<AutenticacaoProvider>(context, listen: false).logout();           
-              Navigator.pop(context);
+              Provider.of<AutenticacaoProvider>(context, listen: false).logout(context);           
+              
             },    
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
@@ -92,41 +92,39 @@ class _ListaMercadosScreenState extends State<ListaMercadosScreen> {
                   ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 ),
               ),
-              Center(child: CircularProgressIndicator())
+              const Center(child: CircularProgressIndicator())
             ]
           )
         )  
       : Consumer<MercadoProvider>(
-          builder: (context, mercadoProvider, child) {
-           return Stack(
-             children: [
-               Container(
-                 decoration: const BoxDecoration(
-                   gradient: LinearGradient(colors: [
-                     Color.fromARGB(240, 179, 178, 178),
-                     Color.fromARGB(212, 0, 0, 0),
-                   ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                 ),
+        builder: (context, mercadoProvider, child) {
+         return Stack(
+           children: [
+             Container(
+               decoration: const BoxDecoration(
+                 gradient: LinearGradient(colors: [
+                   Color.fromARGB(240, 179, 178, 178),
+                   Color.fromARGB(212, 0, 0, 0),
+                 ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                ),
-
-               RefreshIndicator(
-                 onRefresh: () async =>
-                     await Provider.of<MercadoProvider>(context, listen: false)
-                         .carregarMercados(context),
-                 child: ListView.builder(
-                   itemCount: mercadoProvider.items.length,
-                   itemBuilder: (context, index) {
-                     return ListaMercadosCardScreens(
-                         mercado: mercadoProvider.items[index]);
-                   },
-                 ),
-               ) 
-             ],
-
-            );
-          }
-        ),  
-        
+             ),
+             RefreshIndicator(
+               onRefresh: () async =>
+                   await Provider.of<MercadoProvider>(context, listen: false)
+                       .carregarMercados(context),
+               child: ListView.builder(
+                 itemCount: mercadoProvider.items.length,
+                 itemBuilder: (context, index) {
+                   return ListaMercadosCardScreens(
+                       mercado: mercadoProvider.items[index]);
+                 },
+               ),
+             ) 
+           ],
+          );
+        }
+      ), 
+      
     );
   }
 }

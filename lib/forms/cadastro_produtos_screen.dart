@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:comparador_de_precos/models/markets.dart';
-import 'package:comparador_de_precos/models/product.dart';
 import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CadastroProdutosScreen extends StatefulWidget {
   final Mercado mercado;
-  CadastroProdutosScreen({required this.mercado});
+  const CadastroProdutosScreen({Key? key, required this.mercado}) : super(key: key);
 
   @override
   State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
@@ -20,7 +17,6 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controllerProduto = TextEditingController();
     _controllerValor = TextEditingController();
@@ -33,7 +29,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Novo Produto'),
-        backgroundColor: Color.fromARGB(251, 231, 180, 12),
+        backgroundColor: const Color.fromARGB(255, 12, 12, 12),
         centerTitle: true,
         actions: [
           IconButton(
@@ -42,7 +38,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
               double.parse(_controllerValor.text), widget.mercado, context);
               Navigator.pop(context);
             },
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
           )
         ],
       ),
@@ -56,7 +52,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Form(
             child: Column(
               children: [

@@ -1,48 +1,40 @@
 import 'package:comparador_de_precos/models/markets.dart';
-import 'package:comparador_de_precos/models/product.dart';
-import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
+import 'package:comparador_de_precos/providers/mercado_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class EditProdutoScreen extends StatefulWidget {
-  final Produto produto;
+class MercadoEditSceens extends StatefulWidget {
   final Mercado mercado;
-  const EditProdutoScreen(
-      {Key? key, required this.produto, required this.mercado})
-      : super(key: key);
+  const MercadoEditSceens({Key? key, required this.mercado}) : super(key: key);
 
   @override
-  State<EditProdutoScreen> createState() => _EditProdutoScreenState();
+  State<MercadoEditSceens> createState() => _MercadoEditSceensState();
 }
 
-class _EditProdutoScreenState extends State<EditProdutoScreen> {
-  late final TextEditingController _controllerProduto;
-  late final TextEditingController _controllerValor;
+class _MercadoEditSceensState extends State<MercadoEditSceens> {
+  late final TextEditingController _controllerEditMercado;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controllerProduto =
-        TextEditingController(text: widget.produto.nomeProduto);
-    _controllerValor =
-        TextEditingController(text: widget.produto.valorProduto.toString());
+    _controllerEditMercado = TextEditingController(text: widget.mercado.nome);
   }
 
   @override
   Widget build(BuildContext context) {
-    final control = Provider.of<MercadoProdutosProvider>(context);
+    final control = Provider.of<MercadoProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 231, 180, 12),
+       backgroundColor: Color.fromARGB(255, 12, 12, 12),
         title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              control.editarProduto(widget.produto, widget.mercado,
-                  _controllerProduto.text, double.parse(_controllerValor.text));
+              control.editarMercado(
+                  widget.mercado, _controllerEditMercado.text, context);
               Navigator.pop(context);
             },
             icon: Icon(Icons.save),
@@ -65,13 +57,8 @@ class _EditProdutoScreenState extends State<EditProdutoScreen> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: _controllerProduto,
+                    controller: _controllerEditMercado,
                     keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(labelText: 'Valor'),
-                  ),
-                  TextFormField(
-                    controller: _controllerValor,
-                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(labelText: 'Valor'),
                   ),
                 ],

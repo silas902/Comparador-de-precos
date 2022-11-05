@@ -52,17 +52,17 @@ class ListProductsCardScreen extends StatelessWidget {
       child: Container(
         height: 100,
         child: Card(
+          color: Colors.black38,
           margin: const EdgeInsets.all(6),
-          color: Colors.grey[200],
           elevation: 10,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ListTile(
-                title: Text(produto.nomeProduto.toString()),
-                subtitle: Text(produto.valorProduto.toString()),
+                title: Text(produto.nomeProduto.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
+                subtitle: Text(produto.valorProduto.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
                 trailing: IconButton(
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(Icons.edit, color: Colors.white),
                   onPressed: () {
                     onClick(produto);
                   },

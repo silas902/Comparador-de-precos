@@ -18,7 +18,7 @@ class MercadoProdutosProvider extends ChangeNotifier {
   MercadoProdutosProvider(this._token, this._userId);
 
   Future<void> carregarProdutos(Mercado mercado, context) async {
-    try{
+     try{
       final auth =  Provider.of<AutenticacaoProvider>(context, listen: false);
       _items.clear();
       final response = await http.get(Uri.parse('${Constantes.Url}/$_userId/mercados/${mercado.id}/produtos.json?auth=$_token'));
