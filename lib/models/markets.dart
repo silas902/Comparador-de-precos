@@ -1,14 +1,14 @@
 //Todo add produto
 import 'package:comparador_de_precos/models/product.dart';
 
-class Mercado {
-  final List<Produto> produtos;
+class Marketplace {
+  final List<Product> products;
   final String id;
-  final String nome; 
+  final String name; 
 
-  Mercado ({
-    required this.produtos,
+  Marketplace ({
+    required this.products,
     required this.id,
-    required this.nome,
+    required this.name,
   });
 }

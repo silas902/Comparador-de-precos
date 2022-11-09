@@ -1,31 +1,31 @@
 import 'package:comparador_de_precos/models/markets.dart';
-import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
+import 'package:comparador_de_precos/providers/market_product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CadastroProdutosScreen extends StatefulWidget {
-  final Mercado mercado;
-  const CadastroProdutosScreen({Key? key, required this.mercado})
+class RegistrationProductsScreen extends StatefulWidget {
+  final Marketplace mercado;
+  const RegistrationProductsScreen({Key? key, required this.mercado})
       : super(key: key);
 
   @override
-  State<CadastroProdutosScreen> createState() => _CadastroProdutosScreenState();
+  State<RegistrationProductsScreen> createState() => _RegistrationProductsScreenState();
 }
 
-class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
-  late final TextEditingController _controllerProduto;
-  late final TextEditingController _controllerValor;
+class _RegistrationProductsScreenState extends State<RegistrationProductsScreen> {
+  late final TextEditingController _controllerProduct;
+  late final TextEditingController _controllerValue;
 
   @override
   void initState() {
     super.initState();
-    _controllerProduto = TextEditingController();
-    _controllerValor = TextEditingController();
+    _controllerProduct = TextEditingController();
+    _controllerValue = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<MercadoProdutosProvider>(context);
+    final controller = Provider.of<MarketProductProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,8 +35,8 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              controller.addProduto(_controllerProduto.text,
-                  double.parse(_controllerValor.text), widget.mercado, context);
+              controller.addProduct(_controllerProduct.text,
+                  double.parse(_controllerValue.text), widget.mercado, context);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),
@@ -59,7 +59,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
               children: [
                 TextFormField(
                   cursorColor: Colors.black,
-                  controller: _controllerProduto,
+                  controller: _controllerProduct,
                   keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
                     focusedBorder: UnderlineInputBorder(
@@ -71,7 +71,7 @@ class _CadastroProdutosScreenState extends State<CadastroProdutosScreen> {
                 ),
                 TextFormField(
                   cursorColor: Colors.black,
-                  controller: _controllerValor,
+                  controller: _controllerValue,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     focusedBorder: UnderlineInputBorder(

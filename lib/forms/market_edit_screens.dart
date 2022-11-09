@@ -1,34 +1,39 @@
-import 'package:comparador_de_precos/providers/mercado_provider.dart';
+import 'package:comparador_de_precos/models/markets.dart';
+import 'package:comparador_de_precos/providers/market_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/src/provider.dart';
-import '../models/markets.dart';
+import 'package:provider/provider.dart';
 
-class MercadoCadastrosScreen extends StatefulWidget {
+class MarketEditSceens extends StatefulWidget {
+  final Marketplace marketplace;
+  const MarketEditSceens({Key? key, required this.marketplace}) : super(key: key);
+
   @override
-  State<MercadoCadastrosScreen> createState() => _MercadoCadastrosScreenState();
+  State<MarketEditSceens> createState() => _MarketEditSceensState();
 }
 
-class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
-  late final TextEditingController _controllerMercadoNome;
+class _MarketEditSceensState extends State<MarketEditSceens> {
+  late final TextEditingController _controllerEditMarket;
 
   @override
   void initState() {
     super.initState();
-    _controllerMercadoNome = TextEditingController();
+    _controllerEditMarket = TextEditingController(text: widget.marketplace.name);
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<MercadoProvider>(context);
+    final control = Provider.of<MarketProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 12, 12, 12),
-        title: const Text('Cadastro do Mercado'),
+        title: const Text('Editar Produto'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              controller.addMercado(_controllerMercadoNome.text, context);
+              control.editMarket(
+                  widget.marketplace, _controllerEditMarket.text, context);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),
@@ -52,13 +57,13 @@ class _MercadoCadastrosScreenState extends State<MercadoCadastrosScreen> {
                 children: [
                   TextFormField(
                     cursorColor: Colors.black,
-                    controller: _controllerMercadoNome,
+                    controller: _controllerEditMarket,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
                       ),
-                      labelText: 'Mercado',
+                      labelText: 'Valor',
                       labelStyle: TextStyle(color: Colors.black),
                     ),
                   ),

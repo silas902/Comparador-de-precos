@@ -1,43 +1,37 @@
-import 'package:comparador_de_precos/models/markets.dart';
-import 'package:comparador_de_precos/providers/mercado_provider.dart';
+import 'package:comparador_de_precos/providers/market_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MercadoEditSceens extends StatefulWidget {
-  final Mercado mercado;
-  const MercadoEditSceens({Key? key, required this.mercado}) : super(key: key);
+class RegistrationMarketScreen extends StatefulWidget {
+  const RegistrationMarketScreen({Key? key}) : super(key: key);
 
   @override
-  State<MercadoEditSceens> createState() => _MercadoEditSceensState();
+  State<RegistrationMarketScreen> createState() => _RegistrationMarketScreenState();
 }
 
-class _MercadoEditSceensState extends State<MercadoEditSceens> {
-  late final TextEditingController _controllerEditMercado;
+class _RegistrationMarketScreenState extends State<RegistrationMarketScreen> {
+  late final TextEditingController _controllerMarketName;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _controllerEditMercado = TextEditingController(text: widget.mercado.nome);
+    _controllerMarketName = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    final control = Provider.of<MercadoProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 12, 12, 12),
-        title: const Text('Editar Produto'),
+        backgroundColor: const Color.fromARGB(255, 12, 12, 12),
+        title: const Text('Cadastro do Mercado'),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              control.editarMercado(
-                  widget.mercado, _controllerEditMercado.text, context);
+              context.read<MarketProvider>().addMarket(_controllerMarketName.text, context);
               Navigator.pop(context);
             },
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
           )
         ],
       ),
@@ -52,19 +46,19 @@ class _MercadoEditSceensState extends State<MercadoEditSceens> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Form(
               child: Column(
                 children: [
                   TextFormField(
                     cursorColor: Colors.black,
-                    controller: _controllerEditMercado,
+                    controller: _controllerMarketName,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
                       ),
-                      labelText: 'Valor',
+                      labelText: 'Mercado',
                       labelStyle: TextStyle(color: Colors.black),
                     ),
                   ),

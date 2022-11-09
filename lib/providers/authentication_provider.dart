@@ -8,7 +8,7 @@ import '../constants/constants.dart';
 import '../exceptions/auth_exception.dart';
 
 
-class AutenticacaoProvider extends ChangeNotifier{
+class AuthenticationProvider extends ChangeNotifier{
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _token;
@@ -35,45 +35,7 @@ class AutenticacaoProvider extends ChangeNotifier{
     return isAuth ? _userId : null;
   }
 
-  //Future<void> _authenticate( String email, String passeord) {
-  //  
-  //}
-
-  //AutenticacaoProvider() {
-  //  _authCheck();
-  //}
-//
-  //_authCheck() {
-  //  _auth.authStateChanges().listen((User? user) {
-  //    usuario = (user == null) ? null: user;
-  //    isLoading = false;
-  //    notifyListeners();
-  //  });
-  //  
-  //  
-  //}
-  //_getUser() {
-  //  
-  //  usuario = _auth.currentUser;
-  //  notifyListeners();
-  //}
-  
-  //Future<void> registrar(String email, String senha) async {
-    //try {
-     // await _auth.createUserWithEmailAndPassword(email: email, password: senha);
-      //_getUser();
-    //} on FirebaseAuthException catch (e) {
-    //  if(e.code == 'weak-password') {
-    //    throw execessaoAutenticacao('A senha e muinto fraca!');
-    //  } else if (e.code == 'email-already-in-use') {
-    //    throw execessaoAutenticacao('Este email já esta cadastrado');
-    //  }
-    //}
-
-  //}
   Future<void> _authenticate(String email, String password, String urlFragment) async {
-    print(urlFragment);
-    print(Constantes.webApiKey);
     final _url = 'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constantes.webApiKey}';
 
     final response = await http.post(Uri.parse(_url),
@@ -97,13 +59,11 @@ class AutenticacaoProvider extends ChangeNotifier{
       );
       notifyListeners();
     }
-    print(body);
   }
 
   Future<void> logout(context) async {
     await FirebaseAuth.instance.signOut();
     Navigator.pop(context);
-    //_getUser();
   }
 
   Future<void> signup(String email, String password) async {

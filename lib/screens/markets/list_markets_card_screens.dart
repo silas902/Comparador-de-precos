@@ -1,18 +1,17 @@
-import 'package:comparador_de_precos/forms/mercado_edit_screens.dart';
+import 'package:comparador_de_precos/forms/market_edit_screens.dart';
 import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/screens/products/list_products_screen.dart';
-import 'package:comparador_de_precos/providers/mercado_provider.dart';
+import 'package:comparador_de_precos/providers/market_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ListaMercadosCardScreens extends StatelessWidget {
-  final Mercado mercado;
+class ListMarketsCardScreens extends StatelessWidget {
+  final Marketplace marketplace;
 
-  const ListaMercadosCardScreens({Key? key, required this.mercado}): super(key: key);
+  const ListMarketsCardScreens({Key? key, required this.marketplace}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<MercadoProvider>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: UniqueKey(),
@@ -35,7 +34,7 @@ class ListaMercadosCardScreens extends StatelessWidget {
         return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Deseja Excluir o Mercado ${mercado.nome} ?'),
+            title: Text('Deseja Excluir o Mercado ${marketplace.name} ?'),
             content: const Text('Isso Resultará na Exclusão de Todos Produtos do Mercado!'),
             actions: [
               TextButton(
@@ -43,7 +42,7 @@ class ListaMercadosCardScreens extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                provider.excluirMercado(mercado, context);
+                context.read<MarketProvider>().deleteMarket(marketplace, context);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],
@@ -59,17 +58,17 @@ class ListaMercadosCardScreens extends StatelessWidget {
           child: InkWell(
             onTap: () {
               Navigator.push(
-                  context,MaterialPageRoute(builder: (context) => ListProductsScreen(mercado)));
+                  context,MaterialPageRoute(builder: (context) => ListProductsScreen(marketplace)));
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ListTile(
-                  title: Text(mercado.nome.toString(), style: const TextStyle(color: Colors.white,fontStyle: FontStyle.italic)),
+                  title: Text(marketplace.name.toString(), style: const TextStyle(color: Colors.white,fontStyle: FontStyle.italic)),
                   subtitle: const Text('Ultimo Acesso:',style: TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
                   trailing: IconButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MercadoEditSceens(mercado: mercado)));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MarketEditSceens(marketplace: marketplace)));
                     },
                     icon: const Icon(Icons.edit, color: Colors.white),
                   ),

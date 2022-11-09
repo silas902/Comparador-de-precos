@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Produto with ChangeNotifier{
+class Product with ChangeNotifier{
   
   final String id;
-  final String nomeProduto; 
-  final double valorProduto;
+  final String productName; 
+  final double productValue;
 
-  Produto ({
+  Product ({
     required this.id,
-    required this.nomeProduto,
-    required this.valorProduto,
+    required this.productName,
+    required this.productValue,
   });
-
-  void add(Produto novoProduto) {}
 }

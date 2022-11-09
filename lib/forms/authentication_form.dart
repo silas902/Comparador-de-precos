@@ -1,19 +1,19 @@
 import 'package:comparador_de_precos/exceptions/auth_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/autenticacao_provider.dart';
+import '../providers/authentication_provider.dart';
 
-class FormularioAutenticacao extends StatefulWidget {
-  const FormularioAutenticacao({Key? key}) : super(key: key);
+class AuthenticationForm extends StatefulWidget {
+  const AuthenticationForm({Key? key}) : super(key: key);
 
   @override
-  State<FormularioAutenticacao> createState() => _FormularioAutenticacaoState();
+  State<AuthenticationForm> createState() => _AuthenticationFormState();
 }
 
-class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
+class _AuthenticationFormState extends State<AuthenticationForm> {
   late final TextEditingController _controllerEmail;
-  late final TextEditingController _controllerSenha;
-  late final TextEditingController _controllerSenhaConfirm;
+  late final TextEditingController _controllerPassword;
+  late final TextEditingController _controllerPasswordConfirm;
   bool _showPassword = false;
   final formKey = GlobalKey<FormState>();
 
@@ -30,8 +30,8 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
     setFormAction(isLogin = true);
 
     _controllerEmail = TextEditingController();
-    _controllerSenha = TextEditingController();
-    _controllerSenhaConfirm = TextEditingController();
+    _controllerPassword = TextEditingController();
+    _controllerPasswordConfirm = TextEditingController();
   }
 
   setFormAction(isLogin) {
@@ -53,8 +53,8 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
   void dispose() {
     super.dispose();
     _controllerEmail.dispose();
-    _controllerSenha.dispose();
-    _controllerSenhaConfirm.dispose();
+    _controllerPassword.dispose();
+    _controllerPasswordConfirm.dispose();
   }
 
   void _showErrorDialo(String msg) {
@@ -74,14 +74,12 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
   }
 
   Future<void> login() async {
-    final auth = Provider.of<AutenticacaoProvider>(context, listen: false);
+    final auth = Provider.of<AuthenticationProvider>(context, listen: false);
     try {
       if (isLogin) {
-        await auth.login(_controllerEmail.text, _controllerSenha.text);
+        await auth.login(_controllerEmail.text, _controllerPassword.text);
       } else {
-        context
-            .read<AutenticacaoProvider>()
-            .signup(_controllerEmail.text, _controllerSenha.text);
+        context.read<AuthenticationProvider>().signup(_controllerEmail.text, _controllerPassword.text);
       }
     } on AuthException catch (error) {
       _showErrorDialo(error.toString());
@@ -128,7 +126,7 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
             child: TextFormField(
               obscureText: _showPassword == false ? true : false,
               cursorColor: Colors.black,
-              controller: _controllerSenha,
+              controller: _controllerPassword,
               //onSaved: (senha) => _autentDados['senha'] = senha ?? '',
               validator: (_senha) {
                 final password = _senha ?? '';
@@ -170,7 +168,7 @@ class _FormularioAutenticacaoState extends State<FormularioAutenticacao> {
                 cursorColor: Colors.black,
                 validator: (_password) {
                   final password = _password ?? '';
-                  if (password == _controllerSenha.text) {
+                  if (password == _controllerPassword.text) {
                     return null;
                   }
                   return 'Senhas não conferem.';

@@ -1,18 +1,17 @@
 import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/models/product.dart';
-import 'package:comparador_de_precos/providers/mercado_produtos_provider.dart';
+import 'package:comparador_de_precos/providers/market_product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ListProductsCardScreen extends StatelessWidget {
-  final Produto produto;
-  final Mercado mercado;
-  final Function(Produto) onClick;
-  const ListProductsCardScreen({Key? key, required this.produto, required this.onClick, required this.mercado}): super(key: key);
+  final Product product;
+  final Marketplace marketplace;
+  final Function(Product) onClick;
+  const ListProductsCardScreen({Key? key, required this.product, required this.onClick, required this.marketplace}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<MercadoProdutosProvider>(context, listen: false);
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: UniqueKey(),
@@ -21,9 +20,8 @@ class ListProductsCardScreen extends StatelessWidget {
           color: Colors.grey,
           borderRadius: BorderRadius.circular(10),
         ),
-        margin: EdgeInsets.all(7),
+        margin: const EdgeInsets.all(7),
         padding: const EdgeInsets.all(10),
-        //color: Colors.grey,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: const <Widget> [
@@ -35,21 +33,21 @@ class ListProductsCardScreen extends StatelessWidget {
         return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Deseja Excluir o Produto ${produto.nomeProduto} ?'),
+            title: Text('Deseja Excluir o Produto ${product.productName} ?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                provider.excluirProduto(produto, mercado);
+                context.read<MarketProductProvider>().deleteProduct(product, marketplace);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],
           ),
         );
       },
-      child: Container(
+      child: SizedBox(
         height: 100,
         child: Card(
           color: Colors.black38,
@@ -59,12 +57,12 @@ class ListProductsCardScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ListTile(
-                title: Text(produto.nomeProduto.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
-                subtitle: Text(produto.valorProduto.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
+                title: Text(product.productName.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
+                subtitle: Text(product.productValue.toString(), style: const TextStyle(color: Colors.white, fontStyle: FontStyle.italic)),
                 trailing: IconButton(
                   icon: const Icon(Icons.edit, color: Colors.white),
                   onPressed: () {
-                    onClick(produto);
+                    onClick(product);
                   },
                 ),
               ),

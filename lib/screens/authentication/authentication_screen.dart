@@ -1,10 +1,9 @@
-import 'package:comparador_de_precos/forms/formulario_autenticacao.dart';
+import 'package:comparador_de_precos/forms/authentication_form.dart';
 import 'package:flutter/material.dart';
 
-class AutenticacaoScreen extends StatelessWidget {
-  const AutenticacaoScreen({Key? key}) : super(key: key);
+class AuthenticationScreen extends StatelessWidget {
+  const AuthenticationScreen({Key? key}) : super(key: key);
 
-  //
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +22,7 @@ class AutenticacaoScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                FormularioAutenticacao(),
+                AuthenticationForm(),
               ],
             ),
           )
