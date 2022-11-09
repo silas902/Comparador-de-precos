@@ -2,6 +2,7 @@ import 'package:comparador_de_precos/screens/auth_or_home_page.dart';
 import 'package:comparador_de_precos/providers/authentication_provider.dart';
 import 'package:comparador_de_precos/providers/market_product_provider.dart';
 import 'package:comparador_de_precos/providers/market_provider.dart';
+import 'package:comparador_de_precos/services/market_product_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,12 +34,9 @@ class MyApp extends StatelessWidget {
           },
         ),
         ChangeNotifierProxyProvider<AuthenticationProvider, MarketProductProvider>(
-          create: (context) => MarketProductProvider('', ''),
+          create: (context) => MarketProductProvider(MarketProductServiceHttp(userId: '', token: '')),
           update: (context, authentication, previous) {
-            return MarketProductProvider(
-              authentication.token ?? '',
-              authentication.userId ?? '',
-            );   
+            return MarketProductProvider(MarketProductServiceHttp(userId: authentication.userId ?? '', token: authentication.token ?? ''),);   
           },
         )
       ],

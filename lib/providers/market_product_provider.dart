@@ -1,112 +1,63 @@
-import 'dart:convert';
-import 'package:comparador_de_precos/constants/constants.dart';
 import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/models/product.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import '../services/market_product_service.dart';
 
 class MarketProductProvider extends ChangeNotifier {
   final List<Product> _items = [];
   List<Product> get items => _items;
-  String _token;
-  String _userId;
-  MarketProductProvider(this._token, this._userId);
+  IMarketProductService service;
+  MarketProductProvider(this.service);
 
-  Future<void> loadProducts(Marketplace marketplace, context) async {
-     try{
-      //final auth =  Provider.of<AuthenticationProvider>(context, listen: false);
-      _items.clear();
-      final response = await http.get(Uri.parse('${Constantes.Url}/$_userId/markets/${marketplace.id}/products.json?auth=$_token'));
-      Map<String, dynamic> dados = jsonDecode(response.body);
-      dados.forEach(
-        (productId, productData) {
-          _items.add(
-            Product(
-              id: productId,
-              productName: productData["product"],
-              productValue: productData["valor"],
-            ),
-          );
-        },
-      );
-      notifyListeners();
-
-    } catch (e) {
-      _showDialog(context, title: 'Algum Problema. ', content: 'Cadastre Um Produto ou Verifique sua Conexão.');
-    }
-    
-  }
-
-  Future<void> addProduct(controllerProduct, controllerValue, Marketplace marketplace, context) async {
-    //final auth =  Provider.of<AuthenticationProvider>(context, listen: false);
-    try {
-      final response = await http.post(Uri.parse('${Constantes.Url}/$_userId/markets/${marketplace.id}/products.json?auth=$_token'),
-        body: json.encode(
-          {
-            "product": controllerProduct,
-            "valor": controllerValue,
-          },
-        ),
-      );
-      final id = json.decode(response.body)['name'];
-      _items.add(
-        Product(
-          id: id,
-          productName: controllerProduct,
-          productValue: controllerValue,
-        ),
-      );
-      notifyListeners();
-    } catch (_) {
-      _showDialog(context, title: 'Algum Problema!', content: 'Verifique sua conexão');
-    }
-  }
-
-  void _showDialog(BuildContext context, {required String title, required String content}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return  AlertDialog(
-          title: Text(title),
-          content: Text(content),
-        );
+  Future<String> loadProducts(String marketplaceId) async {
+    _items.clear();
+    Map<String, dynamic>? dados = await service.loadProducts(marketplaceId: marketplaceId);
+    if (dados == null) return _response('Verifique sua conexão');
+    dados.forEach(
+      (productId, productData) {
+        _items.add(Product(id: productId, productName: productData["product"], productValue: productData["valor"]));
       },
     );
+    return _response("");
   }
 
-  Future<void> editProduct(Product product, Marketplace marketplace, String controllerProduct, double controllerValue) async {
-    int index = _items.indexWhere((p) => p.id == product.id);
+  Future<String> addProduct(String productName, double productValue, String marketplaceId) async {
+    String id = await service.addProduct(productName: productName, productValue: productValue, marketplaceId: marketplaceId);
+    if (id.isEmpty) _response('Verifique sua conexão');
+    _items.add(Product(id: id, productName: productName, productValue: productValue));
+    return _response("");
+  }
 
-    final newProduct = Product(
-      id: product.id,
-      productName: controllerProduct,
-      productValue: controllerValue,
-    );
-
+  Future<String> editProduct(Product oldProduct, Marketplace marketplace, String productName, double productValue) async {
+    int index = _items.indexWhere((p) => p.id == oldProduct.id);
+    final newProduct = Product(id: oldProduct.id, productName: productName, productValue: productValue);
     if (index >= 0) {
-      await http.patch(
-          Uri.parse('${Constantes.Url}/$_userId/markets/${marketplace.id}/products.json?auth=$_token'),
-          body: jsonEncode({
-            "product": controllerProduct,
-            "valor": controllerValue,
-          }));
+      String erro = await service.editProduct(productId: newProduct.id, productName: newProduct.productName, productValue: newProduct.productValue, marketplaceId: marketplace.id);
+      if (erro.isNotEmpty) return _response(erro);
       _items[index] = newProduct;
-      notifyListeners();
+      return _response("");
     }
-    print('Ocorreu algum erro!');
+    else {
+      return _response('Produto nao existe na lista: ' + oldProduct.productName);
+    }    
   }
 
-  Future<void> deleteProduct(Product product, Marketplace marketplace) async {
+  Future<String> deleteProduct(Product product, Marketplace marketplace) async {
     int index = _items.indexWhere((p) => p.id == product.id);
-
     if (index >= 0) {
-      final product = _items[index];
-      _items.remove(product);
-      notifyListeners();
-      final response = await http.delete(
-        Uri.parse('${Constantes.Url}/$_userId/markets/${marketplace.id}/products/${product.id}.json?auth=$_token'),
-      );
+      String erro = await service.deleteProduct(productId: product.id, marketplaceId: marketplace.id);
+      if (erro.isNotEmpty) return _response(erro);
+      _items.removeAt(index);
+      return _response("");
     }
+    else {
+      return _response('Produto nao existe na lista: ' + product.productName);
+    }    
+  }
+
+  String _response(String message) {
+    notifyListeners(); 
+    return message;  
   }
 }

@@ -34,9 +34,12 @@ class _RegistrationProductsScreenState extends State<RegistrationProductsScreen>
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              controller.addProduct(_controllerProduct.text,
-                  double.parse(_controllerValue.text), widget.mercado, context);
+            onPressed: () async {
+              final String response = await controller.addProduct(_controllerProduct.text,
+              double.parse(_controllerValue.text), widget.mercado.id);
+              if(response.isNotEmpty){
+                _showDialog(context, title: 'Algum Problema!', content: response);
+              }
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),
@@ -86,6 +89,18 @@ class _RegistrationProductsScreenState extends State<RegistrationProductsScreen>
           ),
         ),
       ]),
+    );
+  }
+
+  void _showDialog(BuildContext context, {required String title, required String content}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return  AlertDialog(
+          title: Text(title),
+          content: Text(content),
+        );
+      },
     );
   }
 }

@@ -20,7 +20,7 @@ class _ListProductsScreenState extends State<ListProductsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<MarketProductProvider>().loadProducts(widget.marketplace, context).then((value) => setState(() {_isLoading = false;}));        
+    context.read<MarketProductProvider>().loadProducts(widget.marketplace.id).then((value) => setState(() {_isLoading = false;}));        
   }
 
   @override
@@ -72,7 +72,7 @@ class _ListProductsScreenState extends State<ListProductsScreen> {
                     ),
                     RefreshIndicator(
                       onRefresh: () async => await mercadoProdutosProvider
-                          .loadProducts(widget.marketplace, context),
+                          .loadProducts(widget.marketplace.id),
                       child: ListView.builder(
                         itemCount: mercadoProdutosProvider.items.length,
                         itemBuilder: (context, index) {
