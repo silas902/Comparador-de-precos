@@ -42,7 +42,7 @@ class ListMarketsCardScreens extends StatelessWidget {
                 child: const Text('Não'),
               ),
               TextButton(onPressed: () {
-                context.read<MarketProvider>().deleteMarket(marketplace, context);
+                context.read<MarketProvider>().deleteMarket(marketId: marketplace.id, marketplace: marketplace);
                 Navigator.pop(context);
               }, child: const Text('Sim')),
             ],

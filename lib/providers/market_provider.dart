@@ -1,67 +1,49 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:comparador_de_precos/constants/constants.dart';
 import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/providers/authentication_provider.dart';
+import 'package:comparador_de_precos/services/market_service_http.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class MarketProvider extends ChangeNotifier {
-  final String _token;
-  final String _userId;
+  IMarketService service;
   List<Marketplace> _items = [];
+  MarketProvider(this.service);
+
   List<Marketplace> get items => [..._items];
   bool isLoading = true;
 
-  MarketProvider(this._token, this._items, this._userId);
-
-  Future<void> loadMarkets(BuildContext context,) async {
+  Future<String> loadMarkets() async {
     _items.clear();
-    final response = await http.get(Uri.parse('${Constantes.Url}/$_userId/markets.json?auth=$_token'));
-    Map<String, dynamic> data = jsonDecode(response.body);
-    
+    Map<String, dynamic>? data = await service.loadMarkets();
+    print(data);
+    if(data == null) return _response('Verifique sua conexão ou cadastre um produto');
     data.forEach(
       (marketId, marketData) {
         _items.add(
           Marketplace(
             products: [],
-            id: marketId,
-            name: marketData['nome'].toString(),
+            id: marketId.toString(),
+            name: marketData["nome"] as String,
           ),
         );
       },
     );
-    isLoading = false;
-    notifyListeners();
+    //isLoading = false;
+    return _response('');
+    
   }
 
-  Future<void> addMarket(controllermarketName, context) async {
-    
-    try {
-      final response = await http.post(
-        Uri.parse('${Constantes.Url}/$_userId/markets.json?auth=$_token'),
-        body: json.encode(
-          {
-            'nome': controllermarketName,
-          },
-        ),
-      );
-       isLoading = false;
-      final id = json.decode(response.body)['name'];
-      _items.add(
-        Marketplace(
-          id: id,
-          name: controllermarketName,
-          products: [],
-        ),
-      );
-      notifyListeners();
-      //Navigator.pop(context);
-    } catch (_) {
-      _showDialog(context);
-    }
-  } 
-  
+  Future<String> addMarket({required String marketName}) async {
+    String id = await service.addMarket(merketName: marketName);
+    if (id.isEmpty) return _response('Verifique sua conexão');
+    _items.add(Marketplace(id: id.toString(), name: marketName, products: []));
+    return _response('');
+  }
+
   void _showDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -75,40 +57,57 @@ class MarketProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> editMarket(Marketplace marketplace, contralerEditMarket, context) async {
-    int index = _items.indexWhere((p) => p.id == marketplace.id);
+  Future<String> editMarket({required marketId, required marketName}) async {
 
-    final newMarket = Marketplace(
-      id: marketplace.id,
-      name: contralerEditMarket,
-      products: marketplace.products,
-    );
+    int index = _items.indexWhere((p) => p.id == marketId);
+    
 
     if (index >= 0) {
-      await http.patch(
-        Uri.parse('${Constantes.Url}/$_userId/markets.json?auth=$_token'),
-        body: jsonEncode(
-          {
-            'nome': contralerEditMarket,
-          },
-        ),
-      );
+      String id = await service.editMarket(marketId: marketId, marketName: marketName);
+      if(id.isEmpty) return _response('algum erro');
+      final newMarket = _items[index].copyWith(name: marketName);
       _items[index] = newMarket;
-      notifyListeners();
+      return _response('');
+
+      //await http.patch(
+      //  Uri.parse('${Constantes.Url}/$userId/markets.json?auth=$_token'),
+      //  body: jsonEncode(
+      //    {
+      //      'nome': contralerEditMarket,
+      //    },
+      //  ),
+      //);
+      
+  
+    } else {
+      return _response('Mercado não existe na lista: ' + marketId);
     }
   }
 
-  Future<void> deleteMarket(Marketplace marketplace, context) async {
-    int index = _items.indexWhere((p) => p.id == marketplace.id);
+  Future<String> deleteMarket({required String marketId, required marketplace}) async {
+    int index = _items.indexWhere((p) => p.id == marketId);
 
     if (index >= 0) {
-      final marketplace = _items[index];
+      String erro = await service.deletMarket(marketId: marketId);
+      if(erro.isNotEmpty) return _response(erro);
       _items.remove(marketplace);
-      
+      return _response('');
+    } else {
+      return _response('Produto nao existe na lista');
+    }
+    //   final marketplace = _items[index];
+    //   _items.remove(marketplace);
+//
+    //   final response = await http.delete(
+    //     Uri.parse(
+    //         '${Constantes.Url}/$_userId/markets/${marketplace.id}.json?auth=$_token'),
+    //   );
+    // }
+    // notifyListeners();
+  }
 
-      final response = await http.delete(
-        Uri.parse('${Constantes.Url}/$_userId/markets/${marketplace.id}.json?auth=$_token'),
-      );
-    }notifyListeners();
+  String _response(String message) {
+    notifyListeners();
+    return message;
   }
 }

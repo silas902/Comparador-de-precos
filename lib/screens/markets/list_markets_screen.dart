@@ -13,7 +13,7 @@ class ListMarketsScreen extends StatefulWidget {
 }
 
 class _ListMarketsScreenState extends State<ListMarketsScreen> {
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   //void _showDialog(BuildContext context) {
   //  showDialog(
@@ -31,10 +31,10 @@ class _ListMarketsScreenState extends State<ListMarketsScreen> {
   void initState() {
     super.initState();
     Provider.of<MarketProvider>(context, listen: false)
-        .loadMarkets(context)
+        .loadMarkets()
         .then((value) {
       setState(() {
-        _isLoading = false;
+       //_isLoading = false;
       });
     });
   }
@@ -80,7 +80,10 @@ class _ListMarketsScreenState extends State<ListMarketsScreen> {
             ], begin: Alignment.topLeft, end: Alignment.bottomRight),
           ),
         ),
-        const Center(child: CircularProgressIndicator())
+         Center(child: RefreshIndicator(child: CircularProgressIndicator(), onRefresh: () async => await Provider.of<MarketProvider>(
+                context,
+                listen: false,
+              ).loadMarkets(),))
       ]))
     : Consumer<MarketProvider>(builder: (context, marketProvider, child) {
         return Stack(
@@ -97,7 +100,7 @@ class _ListMarketsScreenState extends State<ListMarketsScreen> {
               onRefresh: () async => await Provider.of<MarketProvider>(
                 context,
                 listen: false,
-              ).loadMarkets(context),
+              ).loadMarkets(),
               child: ListView.builder(
                 itemCount: marketProvider.items.length,
                 itemBuilder: (context, index) {

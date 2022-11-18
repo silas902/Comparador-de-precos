@@ -75,17 +75,17 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
 
   Future<void> login() async {
     final auth = Provider.of<AuthenticationProvider>(context, listen: false);
-    try {
+    //try {
       if (isLogin) {
         await auth.login(_controllerEmail.text, _controllerPassword.text);
       } else {
         context.read<AuthenticationProvider>().signup(_controllerEmail.text, _controllerPassword.text);
       }
-    } on AuthException catch (error) {
-      _showErrorDialo(error.toString());
-    } catch (error) {
-      _showErrorDialo('Ocorreu um errro inesperado!');
-    }
+   // } on AuthException catch (error) {
+   //   _showErrorDialo(error.toString());
+   // } catch (error) {
+    //  _showErrorDialo('Ocorreu um errro inesperado!');
+   // }
   }
 
   @override

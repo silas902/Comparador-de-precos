@@ -2,7 +2,8 @@ import 'package:comparador_de_precos/screens/auth_or_home_page.dart';
 import 'package:comparador_de_precos/providers/authentication_provider.dart';
 import 'package:comparador_de_precos/providers/market_product_provider.dart';
 import 'package:comparador_de_precos/providers/market_provider.dart';
-import 'package:comparador_de_precos/services/market_product_service.dart';
+import 'package:comparador_de_precos/services/market_product_service_http.dart';
+import 'package:comparador_de_precos/services/market_service_http.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +25,10 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthenticationProvider(),
         ),
          ChangeNotifierProxyProvider<AuthenticationProvider, MarketProvider>(
-          create: (context) => MarketProvider('', [], ''),
+          create: (context) => MarketProvider(MarketServiceHttp(userId: '', token: '')),
           update: (context, authentication, previous) {
             return MarketProvider(
-              authentication.token ?? '',
-              previous?.items ?? [],
-              authentication.userId ?? '',
+              MarketServiceHttp(userId: authentication.userId ?? '', token: authentication.token ?? ''),
             );
           },
         ),
@@ -43,7 +42,6 @@ class MyApp extends StatelessWidget {
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: AuthOrHomePage(),
-        //ListaMercadosScreen(), ,
       ),
     );
   }

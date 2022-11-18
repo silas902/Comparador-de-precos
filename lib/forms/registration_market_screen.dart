@@ -28,7 +28,7 @@ class _RegistrationMarketScreenState extends State<RegistrationMarketScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              context.read<MarketProvider>().addMarket(_controllerMarketName.text, context);
+              context.read<MarketProvider>().addMarket( marketName: _controllerMarketName.text);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),

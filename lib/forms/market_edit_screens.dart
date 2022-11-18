@@ -32,8 +32,7 @@ class _MarketEditSceensState extends State<MarketEditSceens> {
         actions: [
           IconButton(
             onPressed: () {
-              control.editMarket(
-                  widget.marketplace, _controllerEditMarket.text, context);
+              control.editMarket( marketName: _controllerEditMarket.text, marketId: widget.marketplace.id);
               Navigator.pop(context);
             },
             icon: const Icon(Icons.save),

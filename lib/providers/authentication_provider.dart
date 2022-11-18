@@ -38,14 +38,23 @@ class AuthenticationProvider extends ChangeNotifier{
   Future<void> _authenticate(String email, String password, String urlFragment) async {
     final _url = 'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constantes.webApiKey}';
 
-    final response = await http.post(Uri.parse(_url),
-    body: jsonEncode({
+    var url = Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constantes.webApiKey}');
+    String data = json.encode({
       'email': email,
       'password': password,
-      'returnSecureToken': true,
-    }));
+      'returnSecureToken': true
+    });
+    final response = await http.post(url, body: data);
 
+    //final response = await http.post(Uri.parse(_url),
+    //body: json.encode({
+    //  'email': email,
+    //  'password': password,
+    //  'returnSecureToken': true
+    //}));
+//
     final body = jsonDecode(response.body);
+    //print(response.body);
 
     if (body['error'] != null) {
       throw AuthException(body['error']['message']);
@@ -57,6 +66,7 @@ class AuthenticationProvider extends ChangeNotifier{
       _expiryDate = DateTime.now().add(
         Duration(seconds: int.parse(body['expiresIn'])),
       );
+      print(response);
       notifyListeners();
     }
   }

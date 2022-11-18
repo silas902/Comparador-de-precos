@@ -2,7 +2,7 @@ import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/models/product.dart';
 import 'package:flutter/material.dart';
 
-import '../services/market_product_service.dart';
+import '../services/market_product_service_http.dart';
 
 class MarketProductProvider extends ChangeNotifier {
   final List<Product> _items = [];

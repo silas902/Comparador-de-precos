@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:comparador_de_precos/providers/market_product_provider.dart';
-import 'package:comparador_de_precos/services/market_product_service.dart';
+import 'package:comparador_de_precos/services/market_product_service_http.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -72,7 +72,7 @@ void main() {
 
   });
 
-   test('marketProductProvider.addProduct - erro', () async{
+  test('marketProductProvider.addProduct - erro', () async{
 
   
     // arrange
