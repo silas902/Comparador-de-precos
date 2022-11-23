@@ -1,8 +1,10 @@
 import 'package:comparador_de_precos/forms/authentication_form.dart';
+import 'package:comparador_de_precos/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 
 class AuthenticationScreen extends StatelessWidget {
-  const AuthenticationScreen({Key? key}) : super(key: key);
+  final AuthenticationProvider authenticationProvider;
+  const AuthenticationScreen({Key? key, required this.authenticationProvider}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,8 @@ class AuthenticationScreen extends StatelessWidget {
           SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                AuthenticationForm(),
+              children: [
+                AuthenticationForm(authenticationProvider: authenticationProvider,),
               ],
             ),
           )

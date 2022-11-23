@@ -17,7 +17,9 @@ class MarketProvider extends ChangeNotifier {
   bool isLoading = true;
 
   Future<String> loadMarkets() async {
-    _items.clear();
+    try {
+     
+     _items.clear();
     Map<String, dynamic>? data = await service.loadMarkets();
     print(data);
     if(data == null) return _response('Verifique sua conexão ou cadastre um produto');
@@ -34,6 +36,11 @@ class MarketProvider extends ChangeNotifier {
     );
     //isLoading = false;
     return _response('');
+
+    } catch (e) {
+      return '';
+    }
+    
     
   }
 
@@ -67,43 +74,24 @@ class MarketProvider extends ChangeNotifier {
       if(id.isEmpty) return _response('algum erro');
       final newMarket = _items[index].copyWith(name: marketName);
       _items[index] = newMarket;
-      return _response('');
-
-      //await http.patch(
-      //  Uri.parse('${Constantes.Url}/$userId/markets.json?auth=$_token'),
-      //  body: jsonEncode(
-      //    {
-      //      'nome': contralerEditMarket,
-      //    },
-      //  ),
-      //);
-      
-  
+      return _response(''); 
     } else {
       return _response('Mercado não existe na lista: ' + marketId);
     }
   }
 
-  Future<String> deleteMarket({required String marketId, required marketplace}) async {
+  Future<String> deleteMarket({required String marketId}) async {
     int index = _items.indexWhere((p) => p.id == marketId);
 
     if (index >= 0) {
       String erro = await service.deletMarket(marketId: marketId);
       if(erro.isNotEmpty) return _response(erro);
-      _items.remove(marketplace);
+      //_items.remove(marketplace);
+      _items.remove(_items[index]);
       return _response('');
     } else {
       return _response('Produto nao existe na lista');
     }
-    //   final marketplace = _items[index];
-    //   _items.remove(marketplace);
-//
-    //   final response = await http.delete(
-    //     Uri.parse(
-    //         '${Constantes.Url}/$_userId/markets/${marketplace.id}.json?auth=$_token'),
-    //   );
-    // }
-    // notifyListeners();
   }
 
   String _response(String message) {

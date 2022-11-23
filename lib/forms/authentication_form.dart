@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import '../providers/authentication_provider.dart';
 
 class AuthenticationForm extends StatefulWidget {
-  const AuthenticationForm({Key? key}) : super(key: key);
-
+  const AuthenticationForm({Key? key, required this.authenticationProvider}) : super(key: key);
+  final AuthenticationProvider authenticationProvider;
   @override
   State<AuthenticationForm> createState() => _AuthenticationFormState();
 }
@@ -74,12 +74,11 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
   }
 
   Future<void> login() async {
-    final auth = Provider.of<AuthenticationProvider>(context, listen: false);
     //try {
       if (isLogin) {
-        await auth.login(_controllerEmail.text, _controllerPassword.text);
+        await widget.authenticationProvider.login(_controllerEmail.text, _controllerPassword.text);
       } else {
-        context.read<AuthenticationProvider>().signup(_controllerEmail.text, _controllerPassword.text);
+        widget.authenticationProvider.signup(_controllerEmail.text, _controllerPassword.text);
       }
    // } on AuthException catch (error) {
    //   _showErrorDialo(error.toString());

@@ -11,7 +11,6 @@ class AuthOrHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return Provider.of<AuthenticationProvider>(context).isAuth ? const ListMarketsScreen() : const AuthenticationScreen();
+    return Consumer<AuthenticationProvider>(builder: ((context, authenticationProvider, child) =>  authenticationProvider.isAuth ? const ListMarketsScreen() : AuthenticationScreen(authenticationProvider: authenticationProvider,)));
   }
 }

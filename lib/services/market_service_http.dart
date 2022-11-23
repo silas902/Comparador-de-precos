@@ -22,6 +22,7 @@ class MarketServiceHttp extends IMarketService {
     try{
       final response = await http.get(Uri.parse('${Constantes.Url}/$userId/markets.json?auth=$token'));
       Map<String, dynamic>? data = json.decode(response.body);
+      print(response.body);
       return data;
     } catch (e) {
       return null;

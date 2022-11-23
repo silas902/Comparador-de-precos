@@ -1,7 +1,10 @@
+import 'package:comparador_de_precos/forms/market_edit_screens.dart';
+import 'package:comparador_de_precos/models/markets.dart';
 import 'package:comparador_de_precos/providers/authentication_provider.dart';
-import 'package:comparador_de_precos/screens/markets/list_markets_card_screens.dart';
+import 'package:comparador_de_precos/screens/markets/list_markets_card_widget.dart';
 import 'package:comparador_de_precos/forms/registration_market_screen.dart';
 import 'package:comparador_de_precos/providers/market_provider.dart';
+import 'package:comparador_de_precos/screens/products/list_products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +16,7 @@ class ListMarketsScreen extends StatefulWidget {
 }
 
 class _ListMarketsScreenState extends State<ListMarketsScreen> {
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   //void _showDialog(BuildContext context) {
   //  showDialog(
@@ -34,7 +37,7 @@ class _ListMarketsScreenState extends State<ListMarketsScreen> {
         .loadMarkets()
         .then((value) {
       setState(() {
-       //_isLoading = false;
+        _isLoading = false;
       });
     });
   }
@@ -70,49 +73,56 @@ class _ListMarketsScreenState extends State<ListMarketsScreen> {
         ],
       ),
       body: _isLoading
-    ? Center(
-        child: Stack(children: [
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color.fromARGB(240, 179, 178, 178),
-              Color.fromARGB(212, 0, 0, 0),
-            ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-          ),
-        ),
-         Center(child: RefreshIndicator(child: CircularProgressIndicator(), onRefresh: () async => await Provider.of<MarketProvider>(
-                context,
-                listen: false,
-              ).loadMarkets(),))
-      ]))
-    : Consumer<MarketProvider>(builder: (context, marketProvider, child) {
-        return Stack(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  Color.fromARGB(240, 179, 178, 178),
-                  Color.fromARGB(212, 0, 0, 0),
-                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+          ? Center(
+              child: Stack(children: [
+              Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    Color.fromARGB(240, 179, 178, 178),
+                    Color.fromARGB(212, 0, 0, 0),
+                  ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                ),
               ),
-            ),
-            RefreshIndicator(
-              onRefresh: () async => await Provider.of<MarketProvider>(
-                context,
-                listen: false,
-              ).loadMarkets(),
-              child: ListView.builder(
-                itemCount: marketProvider.items.length,
-                itemBuilder: (context, index) {
-                  return ListMarketsCardScreens(
-                    marketplace: marketProvider.items[index],
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      }),
+              Center(
+                  child: RefreshIndicator(
+                    child: const CircularProgressIndicator(),
+                    onRefresh: () async => await Provider.of<MarketProvider>(
+                            context,
+                            listen: false)
+                        .loadMarkets()))
+            ]))
+          : Consumer<MarketProvider>(builder: (context, marketProvider, child) {
+              return Stack(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        Color.fromARGB(240, 179, 178, 178),
+                        Color.fromARGB(212, 0, 0, 0),
+                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    ),
+                  ),
+                  RefreshIndicator(
+                    onRefresh: () async => await Provider.of<MarketProvider>(
+                      context,
+                      listen: false,
+                    ).loadMarkets(),
+                    child: ListView.builder(
+                      itemCount: marketProvider.items.length,
+                      itemBuilder: (context, index) {
+                        Marketplace marketplace = marketProvider.items[index];
+                        return ListMarketsCardWidget(
+                          marketplace: marketplace,
+                          onClickDeleteMarket: () => marketProvider.deleteMarket(marketId: marketplace.id),
+                          onClickEditMarket: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MarketEditSceens(marketplace: marketplace))),
+                          onClick: () =>  Navigator.push(context,MaterialPageRoute(builder: (context) => ListProductsScreen(marketplace))),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
     );
   }
 }
